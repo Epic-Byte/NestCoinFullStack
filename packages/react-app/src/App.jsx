@@ -31,6 +31,7 @@ import {
   Header,
   Ramp,
   ThemeSwitch,
+  UploadFile,
 } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
@@ -78,8 +79,8 @@ const scaffoldEthProvider = navigator.onLine
   : null;
 const poktMainnetProvider = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider(
-      "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
-    )
+    "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
+  )
   : null;
 const mainnetInfura = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
@@ -178,8 +179,8 @@ function App(props) {
     poktMainnetProvider && poktMainnetProvider._isProvider
       ? poktMainnetProvider
       : scaffoldEthProvider && scaffoldEthProvider._network
-      ? scaffoldEthProvider
-      : mainnetInfura;
+        ? scaffoldEthProvider
+        : mainnetInfura;
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
@@ -221,7 +222,7 @@ function App(props) {
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
-  const tx = Transactor(userSigner, gasPrice);
+  const tx = (userSigner, gasPrice);
 
   // Faucet Tx can be used to send funds from the faucet
   const faucetTx = Transactor(localProvider, gasPrice);
@@ -263,13 +264,17 @@ function App(props) {
   const vendorApproval = useContractReader(readContracts, "YourToken", "allowance", [
     address, vendorAddress
   ]);
-  console.log("🤏 vendorApproval",vendorApproval)
+  console.log("🤏 vendorApproval", vendorApproval)
 
   const vendorTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [vendorAddress]);
   console.log("🏵 vendorTokenBalance:", vendorTokenBalance ? ethers.utils.formatEther(vendorTokenBalance) : "...");
 
   const yourTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [address]);
   console.log("🏵 yourTokenBalance:", yourTokenBalance ? ethers.utils.formatEther(yourTokenBalance) : "...");
+
+
+  const nestTokenBalance = useContractReader(readContracts, "NestToken", "balanceOf", [address]);
+  console.log("🏵 nestTokenBalance:", nestTokenBalance ? ethers.utils.formatEther(nestTokenBalance) : "...");
 
   const tokensPerEth = useContractReader(readContracts, "Vendor", "tokensPerEth");
   console.log("🏦 tokensPerEth:", tokensPerEth ? tokensPerEth.toString() : "...");
@@ -496,13 +501,13 @@ function App(props) {
   });
   const [isSellAmountApproved, setIsSellAmountApproved] = useState();
 
-  useEffect(()=>{
-    console.log("tokenSellAmount",tokenSellAmount.value)
+  useEffect(() => {
+    console.log("tokenSellAmount", tokenSellAmount.value)
     const tokenSellAmountBN = tokenSellAmount.valid ? ethers.utils.parseEther("" + tokenSellAmount.value) : 0;
-    console.log("tokenSellAmountBN",tokenSellAmountBN)
+    console.log("tokenSellAmountBN", tokenSellAmountBN)
     setIsSellAmountApproved(vendorApproval && tokenSellAmount.value && vendorApproval.gte(tokenSellAmountBN))
-  },[tokenSellAmount, readContracts])
-  console.log("isSellAmountApproved",isSellAmountApproved)
+  }, [tokenSellAmount, readContracts])
+  console.log("isSellAmountApproved", isSellAmountApproved)
 
   const ethCostToPurchaseTokens =
     tokenBuyAmount.valid && tokensPerEth && ethers.utils.parseEther("" + tokenBuyAmount.value / parseFloat(tokensPerEth));
@@ -516,12 +521,15 @@ function App(props) {
   const [tokenSendAmount, setTokenSendAmount] = useState();
 
   const [buying, setBuying] = useState();
+  const [batchUpload, setBatchUpload] = useState(false);
+  const [batchData, setBatchData] = useState();
+
 
   let transferDisplay = "";
-  if (yourTokenBalance) {
+  if (nestTokenBalance) {
     transferDisplay = (
       <div style={{ padding: 8, marginTop: 32, width: 420, margin: "auto" }}>
-        <Card title="Transfer tokens">
+        <Card title="Single Reward Transfer">
           <div>
             <div style={{ padding: 8 }}>
               <AddressInput
@@ -573,7 +581,7 @@ function App(props) {
               }}
               to="/"
             >
-              YourToken
+              NestToken
             </Link>
           </Menu.Item>
           <Menu.Item key="/contracts">
@@ -591,19 +599,27 @@ function App(props) {
         <Switch>
           <Route exact path="/">
             <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
-              <Card title="Your Tokens" extra={<a href="#">code</a>}>
+              <Card
+                title="Nest Tokens"
+              // extra={<a href="#">code</a>}
+              >
                 <div style={{ padding: 8 }}>
-                  <Balance balance={yourTokenBalance} fontSize={64} />
+                  {/* <Balance balance={yourTokenBalance} fontSize={64} /> */}
+                  <Balance balance={nestTokenBalance} fontSize={64} />
+
                 </div>
               </Card>
             </div>
             {transferDisplay}
             <Divider />
-            <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
-              <Card title="Buy Tokens" extra={<a href="#">code</a>}>
-                <div style={{ padding: 8 }}>{tokensPerEth && tokensPerEth.toNumber()} tokens per ETH</div>
+
+            <div style={{ padding: 8, marginTop: 32, width: 500, margin: "auto" }}>
+              <Card title="Batch Reward Transfer ">
+                {/* <div style={{ padding: 8 }}>{tokensPerEth && tokensPerEth.toNumber()} tokens per ETH</div> */}
                 <div style={{ padding: 8 }}>
-                  <Input
+                  <UploadFile setBatchUpload={setBatchUpload} setBatchData={setBatchData}/>
+                  {/* {batchData} */}
+                  {/* <Input
                     style={{ textAlign: "center" }}
                     placeholder={"amount of tokens to buy"}
                     value={tokenBuyAmount.value}
@@ -615,8 +631,8 @@ function App(props) {
                       }
                       setTokenBuyAmount(buyAmount);
                     }}
-                  />
-                  <Balance balance={ethCostToPurchaseTokens} dollarMultiplier={price} />
+                  /> */}
+                  {/* <Balance balance={ethCostToPurchaseTokens} dollarMultiplier={price} /> */}
                 </div>
 
                 <div style={{ padding: 8 }}>
@@ -624,20 +640,26 @@ function App(props) {
                     type={"primary"}
                     loading={buying}
                     onClick={async () => {
+                      console.log(batchData)
                       setBuying(true);
-                      await tx(writeContracts.Vendor.buyTokens({ value: ethCostToPurchaseTokens }));
-                      setBuying(false);
+                       try {await tx(writeContracts.NestToken.BatchRewardMint({value:batchData.accounts},{value: batchData.amounts}));
+                      }catch(error){
+                          console.error(error);
+                      }finally{
+                        setBuying(false);
+                      }
+
+
+                      
                     }}
-                    disabled={!tokenBuyAmount.valid}
+                    disabled={!batchUpload}
                   >
-                    Buy Tokens
+                    Send Tokens by Batch
                   </Button>
                 </div>
               </Card>
             </div>
-          
-            
-            
+
             {/*Extra UI for buying the tokens back from the user using "approve" and "sellTokens"
 
             <Divider />
