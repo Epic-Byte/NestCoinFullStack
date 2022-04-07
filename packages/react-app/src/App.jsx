@@ -839,15 +839,7 @@ function App(props) {
           </Route>
           <Route path="/contracts">
             <Contract
-              name="Vendor"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-              contractConfig={contractConfig}
-            />
-            <Contract
-              name="YourToken"
+              name="NestToken"
               signer={userSigner}
               provider={localProvider}
               address={address}
