@@ -36,6 +36,8 @@ import {
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 
+import bg from './assets/nestcoin.jpeg';
+
 // contracts
 import externalContracts from "./contracts/external_contracts";
 import deployedContracts from "./contracts/hardhat_contracts.json";
@@ -583,7 +585,7 @@ function App(props) {
     );
 
   return (
-    <div className="App">
+    <div className="App" style={{backgroundImage: `url(${bg})`}}>
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
       {networkDisplay}
@@ -950,7 +952,7 @@ function App(props) {
         </Switch>
       </BrowserRouter>
 
-      <ThemeSwitch />
+      {/* <ThemeSwitch /> */}
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
@@ -972,7 +974,7 @@ function App(props) {
         Created by <Address value={"Your...address"} ensProvider={mainnetProvider} fontSize={16} />
       </div>
 
-      <div style={{ marginTop: 32, paddingBottom: 128, opacity: 0.5 }}>
+      {/* <div style={{ marginTop: 32, paddingBottom: 128, opacity: 0.5 }}>
         <a
           target="_blank"
           style={{ padding: 32, color: "#000" }}
@@ -980,7 +982,7 @@ function App(props) {
         >
           🍴 Fork me!
         </a>
-      </div>
+      </div> */}
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
