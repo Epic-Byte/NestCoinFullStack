@@ -61,7 +61,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -259,25 +259,26 @@ function App(props) {
   const vendorAddress = readContracts && readContracts.Vendor && readContracts.Vendor.address;
 
   const vendorETHBalance = useBalance(localProvider, vendorAddress);
-  if (DEBUG) console.log("💵 vendorETHBalance", vendorETHBalance ? ethers.utils.formatEther(vendorETHBalance) : "...");
+  if (DEBUG) 
+  // console.log("💵 vendorETHBalance", vendorETHBalance ? ethers.utils.formatEther(vendorETHBalance) : "...");
 
-  const vendorApproval = useContractReader(readContracts, "YourToken", "allowance", [
-    address, vendorAddress
-  ]);
-  console.log("🤏 vendorApproval", vendorApproval)
+  // const vendorApproval = useContractReader(readContracts, "YourToken", "allowance", [
+  //   address, vendorAddress
+  // ]);
+  // console.log("🤏 vendorApproval", vendorApproval)
 
-  const vendorTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [vendorAddress]);
-  console.log("🏵 vendorTokenBalance:", vendorTokenBalance ? ethers.utils.formatEther(vendorTokenBalance) : "...");
+  // const vendorTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [vendorAddress]);
+  // console.log("🏵 vendorTokenBalance:", vendorTokenBalance ? ethers.utils.formatEther(vendorTokenBalance) : "...");
 
-  const yourTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [address]);
-  console.log("🏵 yourTokenBalance:", yourTokenBalance ? ethers.utils.formatEther(yourTokenBalance) : "...");
+  // const yourTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [address]);
+  // console.log("🏵 yourTokenBalance:", yourTokenBalance ? ethers.utils.formatEther(yourTokenBalance) : "...");
 
 
-  const nestTokenBalance = useContractReader(readContracts, "NestToken", "balanceOf", [address]);
+  var nestTokenBalance = useContractReader(readContracts, "NestToken", "balanceOf", [address]);
   console.log("🏵 nestTokenBalance:", nestTokenBalance ? ethers.utils.formatEther(nestTokenBalance) : "...");
 
-  const tokensPerEth = useContractReader(readContracts, "Vendor", "tokensPerEth");
-  console.log("🏦 tokensPerEth:", tokensPerEth ? tokensPerEth.toString() : "...");
+  // const tokensPerEth = useContractReader(readContracts, "Vendor", "tokensPerEth");
+  // console.log("🏦 tokensPerEth:", tokensPerEth ? tokensPerEth.toString() : "...");
 
   // const complete = useContractReader(readContracts,"ExampleExternalContract", "completed")
   // console.log("✅ complete:",complete)
@@ -495,7 +496,7 @@ function App(props) {
   const nestTokenssingleAmountEvents = useEventListener(readContracts, "NestToken", "singleAmount", localProvider, 1);
   const nestTokensburnedTokenEvents = useEventListener(readContracts, "NestToken", "burnedToken", localProvider, 1);
 
-  console.log("📟 buyTokensEvents:", buyTokensEvents);
+  // console.log("📟 buyTokensEvents:", buyTokensEvents);
 
   const [tokenBuyAmount, setTokenBuyAmount] = useState({
     valid: false,
@@ -508,20 +509,20 @@ function App(props) {
   const [isSellAmountApproved, setIsSellAmountApproved] = useState();
 
   useEffect(() => {
-    console.log("tokenSellAmount", tokenSellAmount.value)
+    // console.log("tokenSellAmount", tokenSellAmount.value)
     const tokenSellAmountBN = tokenSellAmount.valid ? ethers.utils.parseEther("" + tokenSellAmount.value) : 0;
-    console.log("tokenSellAmountBN", tokenSellAmountBN)
-    setIsSellAmountApproved(vendorApproval && tokenSellAmount.value && vendorApproval.gte(tokenSellAmountBN))
+    // console.log("tokenSellAmountBN", tokenSellAmountBN)
+    // setIsSellAmountApproved(vendorApproval && tokenSellAmount.value && vendorApproval.gte(tokenSellAmountBN))
   }, [tokenSellAmount, readContracts])
-  console.log("isSellAmountApproved", isSellAmountApproved)
+  // console.log("isSellAmountApproved", isSellAmountApproved)
 
   const ethCostToPurchaseTokens =
     tokenBuyAmount.valid && tokensPerEth && ethers.utils.parseEther("" + tokenBuyAmount.value / parseFloat(tokensPerEth));
-  console.log("ethCostToPurchaseTokens:", ethCostToPurchaseTokens);
+  // console.log("ethCostToPurchaseTokens:", ethCostToPurchaseTokens);
 
   const ethValueToSellTokens =
     tokenSellAmount.valid && tokensPerEth && ethers.utils.parseEther("" + tokenSellAmount.value / parseFloat(tokensPerEth));
-  console.log("ethValueToSellTokens:", ethValueToSellTokens);
+  // console.log("ethValueToSellTokens:", ethValueToSellTokens);
 
   const [tokenSendToAddress, setTokenSendToAddress] = useState();
   const [tokenSendAmount, setTokenSendAmount] = useState();
@@ -539,7 +540,6 @@ function App(props) {
 
 
   let transferDisplay = "";
-  if (nestTokenBalance) {
     transferDisplay = (
       <div style={{ padding: 8, marginTop: 32, width: 420, margin: "auto" }}>
         <Card title="Single Reward Transfer">
@@ -581,7 +581,6 @@ function App(props) {
         </Card>
       </div>
     );
-  }
 
   return (
     <div className="App">
@@ -656,7 +655,7 @@ function App(props) {
                     type={"primary"}
                     loading={buying}
                     onClick={async () => {
-                      console.log(batchData)
+                      // console.log(batchData)
                       setBuying(true);
                        try {await tx (writeContracts.NestToken.BatchRewardMint(batchData.accounts, 
                         batchData.amounts
@@ -722,7 +721,7 @@ function App(props) {
                     type={"primary"}
                     loading={sameBuying}
                     onClick={async () => {
-                      console.log(sameBatchData)
+                      // console.log(sameBatchData)
                       setSameBuying(true);
                        try {await tx (writeContracts.NestToken.sameRewardMint(sameBatchData.accounts, 
                         ethers.utils.parseEther("" + sameTokenSendAmount)
@@ -887,7 +886,7 @@ function App(props) {
               <Card>
               {nestTokenssingleAmountEvents.map(item=>(
                 <div key={item.blockNumber + item.blockHash}>
-                      <div>{console.log(item.args)}</div>
+                      {/* <div>{console.log(item.args)}</div> */}
                       {item.args[0].map((it, index)=>(
                         <div key = {index}>
                         
@@ -902,7 +901,7 @@ function App(props) {
               ))}
               </Card>
               <br/>
-              <p>burnedToken</p>
+              {/* <p>burnedToken</p>
               <Card>
               
               
@@ -920,7 +919,7 @@ function App(props) {
                   );
                 }}
               />
-              </Card>
+              </Card> */}
             </div>
             {/*
 
