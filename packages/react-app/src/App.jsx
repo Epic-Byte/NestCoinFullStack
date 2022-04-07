@@ -222,7 +222,7 @@ function App(props) {
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
-  const tx = (userSigner, gasPrice);
+  const tx = Transactor(userSigner, gasPrice);
 
   // Faucet Tx can be used to send funds from the faucet
   const faucetTx = Transactor(localProvider, gasPrice);
@@ -489,6 +489,12 @@ function App(props) {
   }
 
   const buyTokensEvents = useEventListener(readContracts, "Vendor", "BuyTokens", localProvider, 1);
+
+  const nestTokensSingleRewardEvents = useEventListener(readContracts, "NestToken", "SingleReward", localProvider, 1);
+  const nestTokensBatchRewardsEvents = useEventListener(readContracts, "NestToken", "BatchRewards", localProvider, 1);
+  const nestTokenssingleAmountEvents = useEventListener(readContracts, "NestToken", "singleAmount", localProvider, 1);
+  const nestTokensburnedTokenEvents = useEventListener(readContracts, "NestToken", "burnedToken", localProvider, 1);
+
   console.log("📟 buyTokensEvents:", buyTokensEvents);
 
   const [tokenBuyAmount, setTokenBuyAmount] = useState({
@@ -555,7 +561,7 @@ function App(props) {
               type={"primary"}
               onClick={() => {
                 tx(
-                  writeContracts.YourToken.transfer(tokenSendToAddress, ethers.utils.parseEther("" + tokenSendAmount)),
+                  writeContracts.NestToken.transfer(tokenSendToAddress, ethers.utils.parseEther("" + tokenSendAmount)),
                 );
               }}
             >
@@ -642,7 +648,7 @@ function App(props) {
                     onClick={async () => {
                       console.log(batchData)
                       setBuying(true);
-                       try {await tx(writeContracts.NestToken.BatchRewardMint({value:batchData.accounts},{value: batchData.amounts}));
+                       try {await tx (writeContracts.NestToken.BatchRewardMint(batchData.accounts, batchData.amounts));
                       }catch(error){
                           console.error(error);
                       }finally{
@@ -739,19 +745,69 @@ function App(props) {
             </div>
             */}
             <div style={{ padding: 8, marginTop: 32 }}>
-              <div>Vendor Token Balance:</div>
-              <Balance balance={vendorTokenBalance} fontSize={64} />
+              <div>Nest Token Balance:</div>
+              <Balance balance={nestTokenBalance} fontSize={64} />
             </div>
 
-            <div style={{ padding: 8 }}>
-              <div>Vendor ETH Balance:</div>
+            {/* <div style={{ padding: 8 }}>
+              <div>Nest ETH Balance:</div>
               <Balance balance={vendorETHBalance} fontSize={64} /> ETH
-            </div>
+            </div> */}
 
             <div style={{ width: 500, margin: "auto", marginTop: 64 }}>
-              <div>Buy Token Events:</div>
+              <div style={{ fontSize:30}}>Nest Token Events:</div>
+              <br/>
+              <p>SingleReward</p>
               <List
-                dataSource={buyTokensEvents}
+                dataSource={nestTokensSingleRewardEvents}
+                renderItem={item => {
+                  return (
+                    <List.Item key={item.blockNumber + item.blockHash}>
+                      <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> paid
+                      <Balance balance={item.args[1]} />
+                      ETH to get
+                      <Balance balance={item.args[2]} />
+                      Tokens
+                    </List.Item>
+                  );
+                }}
+              />
+              <br/>
+              <p>BatchRewards</p>
+              <List
+                dataSource={nestTokensBatchRewardsEvents}
+                renderItem={item => {
+                  return (
+                    <List.Item key={item.blockNumber + item.blockHash}>
+                      {/* <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> paid */}
+                      {/* <Balance balance={item.args[1]} /> */}
+                      ETH to get
+                      {/* <Balance balance={item.args[2]} /> */}
+                      Tokens
+                    </List.Item>
+                  );
+                }}
+              />
+              <br/>
+              <p>singleAmount</p>
+               <List
+                dataSource={nestTokenssingleAmountEvents}
+                renderItem={item => {
+                  return (
+                    <List.Item key={item.blockNumber + item.blockHash}>
+                      {/* <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> paid */}
+                      {/* <Balance balance={item.args[1]} /> */}
+                      ETH to get
+                      {/* <Balance balance={item.args[2]} /> */}
+                      Tokens
+                    </List.Item>
+                  );
+                }}
+              />
+              <br/>
+              <p>burnedToken</p>
+               <List
+                dataSource={nestTokensburnedTokenEvents}
                 renderItem={item => {
                   return (
                     <List.Item key={item.blockNumber + item.blockHash}>
@@ -765,7 +821,6 @@ function App(props) {
                 }}
               />
             </div>
-
             {/*
 
                 🎛 this scaffolding is full of commonly used components

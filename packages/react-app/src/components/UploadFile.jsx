@@ -14,7 +14,7 @@ export default function UploadFile({ setBatchUpload, setBatchData }) {
       for (let i = 0; i<dataLines.length; i++){
         const row = dataLines[i].split(",");
         accounts.push(row[0]);
-        amounts.push(row[1]);
+        amounts.push(+row[1]);
       
       }
       
