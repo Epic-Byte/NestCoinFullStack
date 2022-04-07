@@ -561,7 +561,7 @@ function App(props) {
               type={"primary"}
               onClick={() => {
                 tx(
-                  writeContracts.NestToken.transfer(tokenSendToAddress, ethers.utils.parseEther("" + tokenSendAmount)),
+                  writeContracts.NestToken.SingleRewardMint(tokenSendToAddress, ethers.utils.parseEther("" + tokenSendAmount)),
                 );
               }}
             >
