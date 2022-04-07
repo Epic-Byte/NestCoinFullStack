@@ -527,8 +527,15 @@ function App(props) {
   const [tokenSendAmount, setTokenSendAmount] = useState();
 
   const [buying, setBuying] = useState();
+
   const [batchUpload, setBatchUpload] = useState(false);
   const [batchData, setBatchData] = useState();
+
+  const [sameBatchUpload, setSameBatchUpload] = useState(false);
+  const [sameBatchData, setSameBatchData] = useState();
+  const [sameBuying, setSameBuying] = useState();
+  const [sameTokenSendAmount, setSameTokenSendAmount] = useState();
+
 
 
   let transferDisplay = "";
@@ -582,7 +589,7 @@ function App(props) {
       <Header />
       {networkDisplay}
       <BrowserRouter>
-        <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
+        <Menu style={{ textAlign: "center" }} selectedKeys={[]} mode="horizontal">
           <Menu.Item key="/">
             <Link
               onClick={() => {
@@ -600,7 +607,7 @@ function App(props) {
               }}
               to="/contracts"
             >
-              Debug Contracts
+              Admin Control
             </Link>
           </Menu.Item>
         </Menu>
@@ -669,6 +676,72 @@ function App(props) {
                     disabled={!batchUpload}
                   >
                     Send Tokens by Batch
+                  </Button>
+                </div>
+              </Card>
+            </div>
+
+
+
+            <div style={{ padding: 8, marginTop: 32, width: 500, margin: "auto" }}>
+              <Card title="Batch same Reward Transfer ">
+                {/* <div style={{ padding: 8 }}>{tokensPerEth && tokensPerEth.toNumber()} tokens per ETH</div> */}
+                <div style={{ padding: 8 }}>
+                  <UploadFile setBatchUpload={setSameBatchUpload} setBatchData={setSameBatchData} same = {true}
+                  />
+
+                <div style={{ padding: 8 }}>
+                  <Input
+                    style={{ textAlign: "center" }}
+                    placeholder={"amount of tokens to send"}
+                    value={sameTokenSendAmount}
+                    onChange={e => {
+                      setSameTokenSendAmount(e.target.value);
+                    }}
+                  />
+                </div>
+                  {/* {batchData} */}
+                  {/* <Input
+                    style={{ textAlign: "center" }}
+                    placeholder={"amount of tokens to buy"}
+                    value={tokenBuyAmount.value}
+                    onChange={e => {
+                      const newValue = e.target.value.startsWith(".") ? "0." : e.target.value;
+                      const buyAmount = {
+                        value: newValue,
+                        valid: /^\d*\.?\d+$/.test(newValue)
+                      }
+                      setTokenBuyAmount(buyAmount);
+                    }}
+                  /> */}
+                  {/* <Balance balance={ethCostToPurchaseTokens} dollarMultiplier={price} /> */}
+                </div>
+
+                <div style={{ padding: 8 }}>
+                  <Button
+                    type={"primary"}
+                    loading={sameBuying}
+                    onClick={async () => {
+                      console.log(sameBatchData)
+                      setSameBuying(true);
+                       try {await tx (writeContracts.NestToken.sameRewardMint(sameBatchData.accounts, 
+                        ethers.utils.parseEther("" + sameTokenSendAmount)
+                        )
+                        
+                       );
+                      //  console.log(batchData.amounts)
+                      }catch(error){
+                          console.error(error);
+                      }finally{
+                        setSameBuying(false);
+                      }
+
+
+                      
+                    }}
+                    disabled={!sameBatchUpload}
+                  >
+                    Send equal Tokens by Batch
                   </Button>
                 </div>
               </Card>
@@ -773,7 +846,7 @@ function App(props) {
                   return (
                     <List.Item key={item.blockNumber + item.blockHash}>
                       
-                      <div>{console.log(item.args)}</div>
+                      {/* <div>{console.log(item.args)}</div> */}
                       <Balance balance={item.args[1]} />
                       Tokens sent to
                       <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> 
@@ -812,22 +885,21 @@ function App(props) {
               <br/>
               <p>singleAmount</p>
               <Card>
-              
-               <List
-                dataSource={nestTokenssingleAmountEvents}
-                renderItem={item => {
-                  return (
-                    <List.Item key={item.blockNumber + item.blockHash}>
+              {nestTokenssingleAmountEvents.map(item=>(
+                <div key={item.blockNumber + item.blockHash}>
+                      <div>{console.log(item.args)}</div>
+                      {item.args[0].map((it, index)=>(
+                        <div key = {index}>
+                        
+                        <Balance balance={item.args[1]} />
+                        Tokens sent to
+                        <Address value={item.args[0][index]} ensProvider={mainnetProvider} fontSize={16} /> 
+                        <Divider/>
+                        </div>
+                      ))}
                       
-                      {/* <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> paid */}
-                      {/* <Balance balance={item.args[1]} /> */}
-                      ETH to get
-                      {/* <Balance balance={item.args[2]} /> */}
-                      Tokens
-                    </List.Item>
-                  );
-                }}
-              />
+                    </div>
+              ))}
               </Card>
               <br/>
               <p>burnedToken</p>

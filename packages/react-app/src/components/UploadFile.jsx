@@ -4,7 +4,7 @@ import { InboxOutlined } from "@ant-design/icons";
 
 const { ethers } = require("ethers");
 
-export default function UploadFile({ setBatchUpload, setBatchData }) {
+export default function UploadFile({ setBatchUpload, setBatchData, same = false }) {
   const { Dragger } = Upload;
 
   const processData = (data) => {
@@ -24,6 +24,25 @@ export default function UploadFile({ setBatchUpload, setBatchData }) {
 
       return {accounts,amounts};
   }
+
+  const sameProcessData = (data) => {
+    let accounts = [];
+    // let amounts = [];
+
+    let dataLines = data.split(/\r\n|\n/);
+
+    for (let i = 0; i<dataLines.length; i++){
+      const row = dataLines[i].split(",");
+      accounts.push(row[0]);
+      // amounts.push(ethers.utils.parseEther("" + row[1]));
+    
+    }
+    
+    console.log(accounts);
+
+    return {accounts};
+  }
+
   const props = {
     name: 'file',
     multiple: true,
@@ -56,8 +75,12 @@ export default function UploadFile({ setBatchUpload, setBatchData }) {
 
       reader.onload = e => {
         // console.log(e.target.result);
+        if (!same){
+          setBatchData(processData(e.target.result));
+        }else{
+          setBatchData(sameProcessData(e.target.result));
+        }
         
-        setBatchData(processData(e.target.result));
 
       };
       reader.readAsText(file);
