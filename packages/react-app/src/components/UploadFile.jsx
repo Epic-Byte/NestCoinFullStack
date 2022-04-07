@@ -2,6 +2,8 @@ import React from 'react'
 import { Upload, message } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 
+const { ethers } = require("ethers");
+
 export default function UploadFile({ setBatchUpload, setBatchData }) {
   const { Dragger } = Upload;
 
@@ -14,7 +16,7 @@ export default function UploadFile({ setBatchUpload, setBatchData }) {
       for (let i = 0; i<dataLines.length; i++){
         const row = dataLines[i].split(",");
         accounts.push(row[0]);
-        amounts.push(+row[1]);
+        amounts.push(ethers.utils.parseEther("" + row[1]));
       
       }
       

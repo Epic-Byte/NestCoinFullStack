@@ -561,7 +561,10 @@ function App(props) {
               type={"primary"}
               onClick={() => {
                 tx(
-                  writeContracts.NestToken.SingleRewardMint(tokenSendToAddress, ethers.utils.parseEther("" + tokenSendAmount)),
+                  writeContracts.NestToken.SingleRewardMint(tokenSendToAddress, 
+                    
+                    ethers.utils.parseEther("" + tokenSendAmount)
+                    ),
                 );
               }}
             >
@@ -648,7 +651,12 @@ function App(props) {
                     onClick={async () => {
                       console.log(batchData)
                       setBuying(true);
-                       try {await tx (writeContracts.NestToken.BatchRewardMint(batchData.accounts, batchData.amounts));
+                       try {await tx (writeContracts.NestToken.BatchRewardMint(batchData.accounts, 
+                        batchData.amounts
+                        )
+                        
+                       );
+                      //  console.log(batchData.amounts)
                       }catch(error){
                           console.error(error);
                       }finally{
@@ -754,47 +762,63 @@ function App(props) {
               <Balance balance={vendorETHBalance} fontSize={64} /> ETH
             </div> */}
 
-            <div style={{ width: 500, margin: "auto", marginTop: 64 }}>
+            <div style={{ width: 650, margin: "auto", marginTop: 64 }}>
               <div style={{ fontSize:30}}>Nest Token Events:</div>
               <br/>
               <p>SingleReward</p>
+              <Card>
               <List
                 dataSource={nestTokensSingleRewardEvents}
                 renderItem={item => {
                   return (
                     <List.Item key={item.blockNumber + item.blockHash}>
-                      <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> paid
+                      
+                      <div>{console.log(item.args)}</div>
                       <Balance balance={item.args[1]} />
-                      ETH to get
-                      <Balance balance={item.args[2]} />
-                      Tokens
+                      Tokens sent to
+                      <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> 
                     </List.Item>
                   );
                 }}
               />
+              </Card>
               <br/>
               <p>BatchRewards</p>
-              <List
+              <Card>
+              {nestTokensBatchRewardsEvents.map(item=>(
+                <div key={item.blockNumber + item.blockHash}>
+                      {/* <div>{console.log(item.args)}</div> */}
+                      {item.args[0].map((it, index)=>(
+                        <div key = {index}>
+                        
+                        <Balance balance={item.args[1][index]} />
+                        Tokens sent to
+                        <Address value={item.args[0][index]} ensProvider={mainnetProvider} fontSize={16} /> 
+                        <Divider/>
+                        </div>
+                      ))}
+                      
+                    </div>
+              ))}
+              {/* <List
                 dataSource={nestTokensBatchRewardsEvents}
                 renderItem={item => {
                   return (
-                    <List.Item key={item.blockNumber + item.blockHash}>
-                      {/* <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> paid */}
-                      {/* <Balance balance={item.args[1]} /> */}
-                      ETH to get
-                      {/* <Balance balance={item.args[2]} /> */}
-                      Tokens
-                    </List.Item>
+                    
                   );
                 }}
-              />
+              /> */}
+              </Card>
               <br/>
               <p>singleAmount</p>
+              <Card>
+              
                <List
                 dataSource={nestTokenssingleAmountEvents}
                 renderItem={item => {
                   return (
                     <List.Item key={item.blockNumber + item.blockHash}>
+                      
                       {/* <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> paid */}
                       {/* <Balance balance={item.args[1]} /> */}
                       ETH to get
@@ -804,8 +828,12 @@ function App(props) {
                   );
                 }}
               />
+              </Card>
               <br/>
               <p>burnedToken</p>
+              <Card>
+              
+              
                <List
                 dataSource={nestTokensburnedTokenEvents}
                 renderItem={item => {
@@ -820,6 +848,7 @@ function App(props) {
                   );
                 }}
               />
+              </Card>
             </div>
             {/*
 
