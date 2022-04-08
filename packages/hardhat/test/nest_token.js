@@ -36,7 +36,7 @@ describe("NestToken 🤖", function () {
             expect(addr1Balance).to.equal(50);
         });
 
-        it("should mint batch reward", async function () {
+       it("should mint batch reward", async function () {
             const addressList = [addr2.address, addr3.address];
             const amountList = [20, 40];
 
@@ -49,7 +49,21 @@ describe("NestToken 🤖", function () {
             // test address 3 balance
             const addr3Balance = await nestToken.balanceOf(addr3.address);
             expect(addr3Balance).to.equal(40);
-        })
-    })
+        });
+        it("should mint batch reward to different addresses", async function () {
+            const addressList = [addr2.address, addr3.address];
+            const amount = 10;
+
+            await nestToken.sameRewardMint(addressList, amount);
+
+            // test address 2 balance
+            const addr2Balance = await nestToken.balanceOf(addr2.address);
+            expect(addr2Balance).to.equal(30);
+
+            // test address 3 balance
+            const addr3Balance = await nestToken.balanceOf(addr3.address);
+            expect(addr3Balance).to.equal(50);
+        });
+    });
 
 });
