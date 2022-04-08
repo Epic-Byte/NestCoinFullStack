@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
+/**
+     * @notice we make use of OpenZeppelin Contracts: ERC20 and Ownabe
+     */
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -8,30 +11,43 @@ contract NestToken is ERC20, Ownable {
 
 
     constructor() ERC20("NestToken", "NST") {
-
-       //gives developer admin role
+       /**
+     * @notice gives developer admin role
+     */
        Roles[msg.sender]=true;
     }
-    //map user to adminrole
+    /**
+     * @notice mapping to store roles given to admins
+     */
     mapping (address=>bool) private Roles;
 
-    // deadline at which function becomes private
-    uint256 deadline = block.timestamp + 5 days;
+    /**
+     * @notice time after which testing phase is complete and temporary access to functions is removed
+     */
+    uint256 deadline = block.timestamp + 2 days;
 
-    //checkes that users admin role is true
+   /**
+     * @notice modifier that restricts function access to only Admins 
+     */
     modifier onlyAdmin{
       require(Roles[msg.sender]==true, "no permission");
       _;
     }
 
 
-    //Events for the front-end
+  /**
+     * @notice events emitted for front-end
+     */
     event SingleReward(address to, uint256 amount);
     event BatchRewards(address [] _recipients, uint256 [] _amounts);
     event singleAmount(address [] _recipients, uint256 _amount);
     event burnedToken (address _addr, uint256 _burned);
 
-    //Reward single customer
+    /**
+    * @notice A method to reward a single loyal customer.
+    * @param _address The address to reward.
+    * @param amount The amount of tokens to be rewarded.
+    */
     function SingleRewardMint(address to, uint256 amount) public {
         if(block.timestamp >= deadline) {
             require(Roles[msg.sender] == true, 'Function is Restricted to only Admins');
@@ -41,24 +57,34 @@ contract NestToken is ERC20, Ownable {
         emit SingleReward(to, amount);
     }
 
-    //Reward Multiple customers at once different amounts
-    //Input format for the array of addresses: ["0x1234....", "0x2345...", ...]
-    //Input format for the array of amounts to be distributed: ["100", "200", ...]
+
+
+    /**
+    * @notice A method to batch reward multiple loyal customers with different amounts.
+    * @notice Input format for the array of addresses: ["0x1234....", "0x2345...", ...]
+    * @notice Input format for the array of amounts to be distributed: ["100", "200", ...]
+    * @param _recipients addresses to reward.
+    * @param _amounts amounts to reward each loyal customer with.
+    */
+
     function BatchRewardMint(address [] memory _recipients, uint256 [] memory _amounts ) public {
         if(block.timestamp >= deadline) {
             require(Roles[msg.sender] == true, 'Function is Restricted to only Admins');
         }
       require(_recipients.length<=200, "input exceeds minting quota");
         for(uint i = 0; i< _recipients.length; ++i){
-             require(_recipients[i] != address(0));
             _mint(_recipients[i], _amounts[i]);
         }
         emit BatchRewards(_recipients, _amounts);
     }  
 
 
-    //This will reward multiple customers the same amount
-    //Input format for the array of addresses: ["0x1234....", "0x2345...", ...]
+    /**
+    * @notice A method to batch reward multiple loyal customers with same amounts.
+    * @notice Input format for the array of addresses: ["0x1234....", "0x2345...", ...]
+    * @param _recipients addresses to reward.
+    * @param _amount amount to reward each loyal customer with.
+    */
       function sameRewardMint(address[] memory _recipients, uint256 _amount) public
     {
         if(block.timestamp >= deadline) {
@@ -68,35 +94,38 @@ contract NestToken is ERC20, Ownable {
 
            for(uint i = 0; i < _recipients.length; ++i)
            {
-             require(_recipients[i] != address(0));
              _mint(_recipients[i], _amount);
            }
         emit singleAmount(_recipients, _amount);       
     }
 
-    //this burns excess tokens from total supply
-      function destroy(uint8 amount)public onlyOwner returns(uint256 , string memory)
-    {
-        require(balanceOf(msg.sender) >= amount,"insufficient funds");
-        _burn(msg.sender,amount);
-        emit burnedToken(msg.sender, amount);
-        return (amount, " Nestcoin Tokens burned");
-    }
-
-    //add an admin 
+      /**
+    * @notice A method to give an address the Admin role
+    * @param _account The address to add.
+    * @return bool a confirmation message
+    */
     function addAdmin(address account)public onlyOwner returns(bool)
     {
       Roles[account]=true;
       return true;
     }
 
-    // remove an admin
+     /**
+    * @notice A method to remove an address from the admin role
+    * @param _account The address to remove.
+    * @return bytes32 a confirmation message
+    */
     function removeAdmin(address account)public onlyOwner returns(bytes32)
     {
       Roles[account]=false;
       return "removed";
     }
 
+      /**
+    * @notice A method to check if an address is an Admin
+    * @param _account The address to check for.
+    * @return bool true if the address is an Admin or false if not
+    */
     function isAdmin(address account)
       public onlyAdmin view returns (bool)
     {
@@ -104,4 +133,3 @@ contract NestToken is ERC20, Ownable {
     }
 
 }
-
