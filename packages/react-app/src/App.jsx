@@ -276,7 +276,8 @@ function App(props) {
   // console.log("🏵 yourTokenBalance:", yourTokenBalance ? ethers.utils.formatEther(yourTokenBalance) : "...");
 
 
-  var nestTokenBalance = useContractReader(readContracts, "NestToken", "balanceOf", [address]);
+  // var nestTokenBalance = useContractReader(readContracts, "NestToken", "balanceOf", [address]);
+  var nestTokenBalance = useContractReader(readContracts, "NestToken", "totalSupply");
   console.log("🏵 nestTokenBalance:", nestTokenBalance ? ethers.utils.formatEther(nestTokenBalance) : "...");
 
   // const tokensPerEth = useContractReader(readContracts, "Vendor", "tokensPerEth");
