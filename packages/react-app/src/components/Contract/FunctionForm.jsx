@@ -163,7 +163,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
     functionInfo.type === "call" ? (
       <Button style={{ marginLeft: -32 }}>Read📡</Button>
     ) : (
-      <Button style={{ marginLeft: -32 }}>Send💸</Button>
+      <Button style={{ marginLeft: -32 }}>Transact</Button>
     );
   inputs.push(
     <div style={{ cursor: "pointer", margin: 2 }} key="goButton">

@@ -134,6 +134,8 @@ export default function Contract({
         size="large"
         style={{ marginTop: 25, width: "100%" }}
         loading={contractDisplay && contractDisplay.length <= 0}
+        headStyle={{borderRadius:5, background:"linear-gradient(-90deg, rgba(162,34,195,0.5760898109243697) 7%, rgba(45,205,253,0.5312718837535014) 88%)",  }}
+        bodyStyle={{borderRadius:10, background:"linear-gradient(90deg, rgba(140,34,195,0.5760898109243697) 7%, rgba(45,159,253,0.5312718837535014) 88%)"}}
       >
         {contractIsDeployed ? contractDisplay : noContractDisplay}
       </Card>

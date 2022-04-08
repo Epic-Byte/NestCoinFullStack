@@ -1,6 +1,6 @@
 import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Alert, Button, Card, Col, Divider, Input, List, Menu, Row } from "antd";
+import { Alert, Button, Card, Col, Divider, Input, List, Menu, Row, Collapse } from "antd";
 import "antd/dist/antd.css";
 import Authereum from "authereum";
 import {
@@ -41,6 +41,8 @@ import bg from './assets/nestcoin.jpeg';
 // contracts
 import externalContracts from "./contracts/external_contracts";
 import deployedContracts from "./contracts/hardhat_contracts.json";
+
+const { Panel } = Collapse;
 
 const { ethers } = require("ethers");
 /*
@@ -261,22 +263,22 @@ function App(props) {
   const vendorAddress = readContracts && readContracts.Vendor && readContracts.Vendor.address;
 
   const vendorETHBalance = useBalance(localProvider, vendorAddress);
-  if (DEBUG) 
-  // console.log("💵 vendorETHBalance", vendorETHBalance ? ethers.utils.formatEther(vendorETHBalance) : "...");
+  if (DEBUG)
+    // console.log("💵 vendorETHBalance", vendorETHBalance ? ethers.utils.formatEther(vendorETHBalance) : "...");
 
-  // const vendorApproval = useContractReader(readContracts, "YourToken", "allowance", [
-  //   address, vendorAddress
-  // ]);
-  // console.log("🤏 vendorApproval", vendorApproval)
+    // const vendorApproval = useContractReader(readContracts, "YourToken", "allowance", [
+    //   address, vendorAddress
+    // ]);
+    // console.log("🤏 vendorApproval", vendorApproval)
 
-  // const vendorTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [vendorAddress]);
-  // console.log("🏵 vendorTokenBalance:", vendorTokenBalance ? ethers.utils.formatEther(vendorTokenBalance) : "...");
+    // const vendorTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [vendorAddress]);
+    // console.log("🏵 vendorTokenBalance:", vendorTokenBalance ? ethers.utils.formatEther(vendorTokenBalance) : "...");
 
-  // const yourTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [address]);
-  // console.log("🏵 yourTokenBalance:", yourTokenBalance ? ethers.utils.formatEther(yourTokenBalance) : "...");
+    // const yourTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [address]);
+    // console.log("🏵 yourTokenBalance:", yourTokenBalance ? ethers.utils.formatEther(yourTokenBalance) : "...");
 
 
-  var nestTokenBalance = useContractReader(readContracts, "NestToken", "balanceOf", [address]);
+    var nestTokenBalance = useContractReader(readContracts, "NestToken", "balanceOf", [address]);
   console.log("🏵 nestTokenBalance:", nestTokenBalance ? ethers.utils.formatEther(nestTokenBalance) : "...");
 
   // const tokensPerEth = useContractReader(readContracts, "Vendor", "tokensPerEth");
@@ -542,55 +544,65 @@ function App(props) {
 
 
   let transferDisplay = "";
-    transferDisplay = (
-      <div style={{ padding: 8, marginTop: 32, width: 420, margin: "auto" }}>
-        <Card title="Single Reward Transfer">
-          <div>
-            <div style={{ padding: 8 }}>
-              <AddressInput
-                ensProvider={mainnetProvider}
-                placeholder="to address"
-                value={tokenSendToAddress}
-                onChange={setTokenSendToAddress}
-              />
-            </div>
-            <div style={{ padding: 8 }}>
-              <Input
-                style={{ textAlign: "center" }}
-                placeholder={"amount of tokens to send"}
-                value={tokenSendAmount}
-                onChange={e => {
-                  setTokenSendAmount(e.target.value);
-                }}
-              />
-            </div>
+  transferDisplay = (
+
+    <div style={{ padding: 8, marginTop: 32, width: 420, margin: "auto" }}>
+      <Card title="Single Reward Transfer"
+        headStyle={{ borderRadius: 5, background: "linear-gradient(-90deg, rgba(162,34,195,0.5760898109243697) 7%, rgba(45,205,253,0.5312718837535014) 88%)", }}
+        bodyStyle={{ borderRadius: 10, background: "linear-gradient(90deg, rgba(140,34,195,0.5760898109243697) 7%, rgba(45,159,253,0.5312718837535014) 88%)" }}
+      >
+        <div>
+          <div style={{ padding: 8 }}>
+            <AddressInput
+              ensProvider={mainnetProvider}
+              placeholder="to address"
+              value={tokenSendToAddress}
+              onChange={setTokenSendToAddress}
+            />
           </div>
           <div style={{ padding: 8 }}>
-            <Button
-              type={"primary"}
-              onClick={() => {
-                tx(
-                  writeContracts.NestToken.SingleRewardMint(tokenSendToAddress, 
-                    
-                    ethers.utils.parseEther("" + tokenSendAmount)
-                    ),
-                );
+            <Input
+              style={{ textAlign: "center" }}
+              placeholder={"amount of tokens to send"}
+              value={tokenSendAmount}
+              onChange={e => {
+                setTokenSendAmount(e.target.value);
               }}
-            >
-              Send Tokens
-            </Button>
+            />
           </div>
-        </Card>
-      </div>
-    );
+        </div>
+        <div style={{ padding: 8 }}>
+          <Button
+            type={"primary"}
+            disabled={!(tokenSendToAddress && tokenSendAmount)}
+            onClick={() => {
+              tx(
+                writeContracts.NestToken.SingleRewardMint(tokenSendToAddress,
+
+                  ethers.utils.parseEther("" + tokenSendAmount)
+                ),
+              );
+            }}
+          >
+            Send Tokens
+          </Button>
+        </div>
+      </Card>
+    </div>
+
+  );
 
   return (
-    <div className="App" style={{backgroundImage: `url(${bg})`}}>
+    <div className="App" style={{ backgroundImage: `url(${bg})` }}>
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
       {networkDisplay}
       <BrowserRouter>
-        <Menu style={{ textAlign: "center" }} selectedKeys={[]} mode="horizontal">
+        <Menu style={{
+          textAlign: "center", borderRadius: 5,
+          background: "linear-gradient(45deg, rgba(0,0,36,0.19233630952380953) 0%, rgba(9,118,121,0.8590029761904762) 17%, rgba(237,0,255,0.35760241596638653) 100%)"
+        }}
+          selectedKeys={[]} mode="horizontal">
           <Menu.Item key="/">
             <Link
               onClick={() => {
@@ -598,7 +610,27 @@ function App(props) {
               }}
               to="/"
             >
-              NestToken
+              NestToken Single Reward Transfer
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/batch_dif">
+            <Link
+              onClick={() => {
+                setRoute("/contracts");
+              }}
+              to="/batch_diff"
+            >
+              NestToken Batch Reward Transfer
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/batch_same">
+            <Link
+              onClick={() => {
+                setRoute("/contracts");
+              }}
+              to="/batch_same"
+            >
+              NestToken Batch same Reward Transfer
             </Link>
           </Menu.Item>
           <Menu.Item key="/contracts">
@@ -615,10 +647,17 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
-            <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
+            <div style={{
+              padding: 8, marginTop: 32, width: 300, margin: "auto",
+
+            }}
+            >
               <Card
                 title="Nest Tokens"
-              // extra={<a href="#">code</a>}
+                // extra={<a href="#">code</a>}
+                headStyle={{ borderRadius: 5, background: "linear-gradient(40deg, rgba(1,36,0,0.4360337885154062) 0%, rgba(100,9,121,0.6825323879551821) 17%, rgba(139,0,255,0.7049413515406162) 78%)" }}
+                bodyStyle={{ borderRadius: 10, background: "linear-gradient(-50deg, rgba(77,63,251,0.7301514355742297) 0%, rgba(215,70,252,0.6685267857142857) 100%)" }}
+
               >
                 <div style={{ padding: 8 }}>
                   {/* <Balance balance={yourTokenBalance} fontSize={64} /> */}
@@ -630,202 +669,6 @@ function App(props) {
             {transferDisplay}
             <Divider />
 
-            <div style={{ padding: 8, marginTop: 32, width: 500, margin: "auto" }}>
-              <Card title="Batch Reward Transfer ">
-                {/* <div style={{ padding: 8 }}>{tokensPerEth && tokensPerEth.toNumber()} tokens per ETH</div> */}
-                <div style={{ padding: 8 }}>
-                  <UploadFile setBatchUpload={setBatchUpload} setBatchData={setBatchData}/>
-                  {/* {batchData} */}
-                  {/* <Input
-                    style={{ textAlign: "center" }}
-                    placeholder={"amount of tokens to buy"}
-                    value={tokenBuyAmount.value}
-                    onChange={e => {
-                      const newValue = e.target.value.startsWith(".") ? "0." : e.target.value;
-                      const buyAmount = {
-                        value: newValue,
-                        valid: /^\d*\.?\d+$/.test(newValue)
-                      }
-                      setTokenBuyAmount(buyAmount);
-                    }}
-                  /> */}
-                  {/* <Balance balance={ethCostToPurchaseTokens} dollarMultiplier={price} /> */}
-                </div>
-
-                <div style={{ padding: 8 }}>
-                  <Button
-                    type={"primary"}
-                    loading={buying}
-                    onClick={async () => {
-                      // console.log(batchData)
-                      setBuying(true);
-                       try {await tx (writeContracts.NestToken.BatchRewardMint(batchData.accounts, 
-                        batchData.amounts
-                        )
-                        
-                       );
-                      //  console.log(batchData.amounts)
-                      }catch(error){
-                          console.error(error);
-                      }finally{
-                        setBuying(false);
-                      }
-
-
-                      
-                    }}
-                    disabled={!batchUpload}
-                  >
-                    Send Tokens by Batch
-                  </Button>
-                </div>
-              </Card>
-            </div>
-
-
-
-            <div style={{ padding: 8, marginTop: 32, width: 500, margin: "auto" }}>
-              <Card title="Batch same Reward Transfer ">
-                {/* <div style={{ padding: 8 }}>{tokensPerEth && tokensPerEth.toNumber()} tokens per ETH</div> */}
-                <div style={{ padding: 8 }}>
-                  <UploadFile setBatchUpload={setSameBatchUpload} setBatchData={setSameBatchData} same = {true}
-                  />
-
-                <div style={{ padding: 8 }}>
-                  <Input
-                    style={{ textAlign: "center" }}
-                    placeholder={"amount of tokens to send"}
-                    value={sameTokenSendAmount}
-                    onChange={e => {
-                      setSameTokenSendAmount(e.target.value);
-                    }}
-                  />
-                </div>
-                  {/* {batchData} */}
-                  {/* <Input
-                    style={{ textAlign: "center" }}
-                    placeholder={"amount of tokens to buy"}
-                    value={tokenBuyAmount.value}
-                    onChange={e => {
-                      const newValue = e.target.value.startsWith(".") ? "0." : e.target.value;
-                      const buyAmount = {
-                        value: newValue,
-                        valid: /^\d*\.?\d+$/.test(newValue)
-                      }
-                      setTokenBuyAmount(buyAmount);
-                    }}
-                  /> */}
-                  {/* <Balance balance={ethCostToPurchaseTokens} dollarMultiplier={price} /> */}
-                </div>
-
-                <div style={{ padding: 8 }}>
-                  <Button
-                    type={"primary"}
-                    loading={sameBuying}
-                    onClick={async () => {
-                      // console.log(sameBatchData)
-                      setSameBuying(true);
-                       try {await tx (writeContracts.NestToken.sameRewardMint(sameBatchData.accounts, 
-                        ethers.utils.parseEther("" + sameTokenSendAmount)
-                        )
-                        
-                       );
-                      //  console.log(batchData.amounts)
-                      }catch(error){
-                          console.error(error);
-                      }finally{
-                        setSameBuying(false);
-                      }
-
-
-                      
-                    }}
-                    disabled={!sameBatchUpload}
-                  >
-                    Send equal Tokens by Batch
-                  </Button>
-                </div>
-              </Card>
-            </div>
-
-            {/*Extra UI for buying the tokens back from the user using "approve" and "sellTokens"
-
-            <Divider />
-            <div style={{ padding: 8, marginTop: 32, width: 300, margin: "auto" }}>
-              <Card title="Sell Tokens">
-                <div style={{ padding: 8 }}>{tokensPerEth && tokensPerEth.toNumber()} tokens per ETH</div>
-
-                <div style={{ padding: 8 }}>
-                  <Input
-                    style={{ textAlign: "center" }}
-                    placeholder={"amount of tokens to sell"}
-                    value={tokenSellAmount.value}
-                    onChange={e => {
-                      const newValue = e.target.value.startsWith(".") ? "0." : e.target.value;
-                      const sellAmount = {
-                        value: newValue,
-                        valid: /^\d*\.?\d+$/.test(newValue)
-                      }
-                      setTokenSellAmount(sellAmount);
-                    }}
-                  />
-                  <Balance balance={ethValueToSellTokens} dollarMultiplier={price} />
-                </div>
-                {isSellAmountApproved?
-
-                  <div style={{ padding: 8 }}>
-                    <Button
-                      disabled={true}
-                      type={"primary"}
-                    >
-                      Approve Tokens
-                    </Button>
-                    <Button
-                      type={"primary"}
-                      loading={buying}
-                      onClick={async () => {
-                        setBuying(true);
-                        await tx(writeContracts.Vendor.sellTokens(tokenSellAmount.valid && ethers.utils.parseEther(tokenSellAmount.value)));
-                        setBuying(false);
-                        setTokenSellAmount("");
-                      }}
-                      disabled={!tokenSellAmount.valid}
-                    >
-                      Sell Tokens
-                    </Button>
-                  </div>
-                  :
-                  <div style={{ padding: 8 }}>
-                    <Button
-                      type={"primary"}
-                      loading={buying}
-                      onClick={async () => {
-                        setBuying(true);
-                        await tx(writeContracts.YourToken.approve(readContracts.Vendor.address, tokenSellAmount.valid && ethers.utils.parseEther(tokenSellAmount.value)));
-                        setBuying(false);
-                        let resetAmount = tokenSellAmount
-                        setTokenSellAmount("");
-                        setTimeout(()=>{
-                          setTokenSellAmount(resetAmount)
-                        },1500)
-                      }}
-                      disabled={!tokenSellAmount.valid}
-                      >
-                      Approve Tokens
-                    </Button>
-                    <Button
-                      disabled={true}
-                      type={"primary"}
-                    >
-                      Sell Tokens
-                    </Button>
-                  </div>
-                    }
-
-
-              </Card>
-            </div>
-            */}
             <div style={{ padding: 8, marginTop: 32 }}>
               <div>Nest Token Balance:</div>
               <Balance balance={nestTokenBalance} fontSize={64} />
@@ -837,107 +680,262 @@ function App(props) {
             </div> */}
 
             <div style={{ width: 650, margin: "auto", marginTop: 64 }}>
-              <div style={{ fontSize:30}}>Nest Token Events:</div>
-              <br/>
-              <p>SingleReward</p>
-              <Card>
-              <List
-                dataSource={nestTokensSingleRewardEvents}
-                renderItem={item => {
-                  return (
-                    <List.Item key={item.blockNumber + item.blockHash}>
-                      
-                      {/* <div>{console.log(item.args)}</div> */}
-                      <Balance balance={item.args[1]} />
-                      Tokens sent to
-                      <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> 
-                    </List.Item>
-                  );
-                }}
-              />
-              </Card>
-              <br/>
-              <p>BatchRewards</p>
-              <Card>
-              {nestTokensBatchRewardsEvents.map(item=>(
-                <div key={item.blockNumber + item.blockHash}>
-                      {/* <div>{console.log(item.args)}</div> */}
-                      {item.args[0].map((it, index)=>(
-                        <div key = {index}>
-                        
-                        <Balance balance={item.args[1][index]} />
-                        Tokens sent to
-                        <Address value={item.args[0][index]} ensProvider={mainnetProvider} fontSize={16} /> 
-                        <Divider/>
-                        </div>
-                      ))}
-                      
-                    </div>
-              ))}
-              {/* <List
-                dataSource={nestTokensBatchRewardsEvents}
-                renderItem={item => {
-                  return (
-                    
-                  );
-                }}
-              /> */}
-              </Card>
-              <br/>
-              <p>singleAmount</p>
-              <Card>
-              {nestTokenssingleAmountEvents.map(item=>(
-                <div key={item.blockNumber + item.blockHash}>
-                      {/* <div>{console.log(item.args)}</div> */}
-                      {item.args[0].map((it, index)=>(
-                        <div key = {index}>
-                        
-                        <Balance balance={item.args[1]} />
-                        Tokens sent to
-                        <Address value={item.args[0][index]} ensProvider={mainnetProvider} fontSize={16} /> 
-                        <Divider/>
-                        </div>
-                      ))}
-                      
-                    </div>
-              ))}
-              </Card>
-              <br/>
-              {/* <p>burnedToken</p>
-              <Card>
-              
-              
-               <List
-                dataSource={nestTokensburnedTokenEvents}
-                renderItem={item => {
-                  return (
-                    <List.Item key={item.blockNumber + item.blockHash}>
-                      <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> paid
-                      <Balance balance={item.args[1]} />
-                      ETH to get
-                      <Balance balance={item.args[2]} />
-                      Tokens
-                    </List.Item>
-                  );
-                }}
-              />
-              </Card> */}
+              <div style={{ fontSize: 30, textShadow: "-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black" }}>Nest Token Events:</div>
+              <br />
+
+              <Collapse defaultActiveKey={['1']} onChange={() => console.log("k")}>
+                <Panel header={<p>Single Reward Transaction</p>} key="1">
+                  <Card
+                    headStyle={{ borderRadius: 5, background: "linear-gradient(-90deg, rgba(162,34,195,0.5760898109243697) 7%, rgba(45,205,253,0.5312718837535014) 88%)", }}
+                    bodyStyle={{ borderRadius: 10, background: "linear-gradient(90deg, rgba(140,34,195,0.5760898109243697) 7%, rgba(45,159,253,0.5312718837535014) 88%)" }}
+                  >
+                    <List
+                      dataSource={nestTokensSingleRewardEvents?.reverse()}
+                      renderItem={item => {
+                        return (
+                          <List.Item key={item.blockNumber + item.blockHash}>
+
+                            <div>{console.log(item.args)}</div>
+                            <Balance balance={item.args[1]} />
+                            Tokens sent to  {"  "}
+                            <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
+                          </List.Item>
+                        );
+                      }}
+                    />
+                  </Card>
+                </Panel>
+              </Collapse>
             </div>
-            {/*
 
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
+          </Route>
+          <Route exact path="/batch_diff">
+            <div style={{
+              padding: 8, marginTop: 32, width: 300, margin: "auto",
 
-            <Contract
-              name="YourContract"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-              contractConfig={contractConfig}
-            />
-            */}
+            }}
+            >
+              <Card
+                title="Nest Tokens"
+                // extra={<a href="#">code</a>}
+                headStyle={{ borderRadius: 5, background: "linear-gradient(40deg, rgba(1,36,0,0.4360337885154062) 0%, rgba(100,9,121,0.6825323879551821) 17%, rgba(139,0,255,0.7049413515406162) 78%)" }}
+                bodyStyle={{ borderRadius: 10, background: "linear-gradient(-50deg, rgba(77,63,251,0.7301514355742297) 0%, rgba(215,70,252,0.6685267857142857) 100%)" }}
+
+              >
+                <div style={{ padding: 8 }}>
+                  {/* <Balance balance={yourTokenBalance} fontSize={64} /> */}
+                  <Balance balance={nestTokenBalance} fontSize={64} />
+
+                </div>
+              </Card>
+            </div>
+            <Divider />
+
+            <div style={{
+              padding: 8,
+              marginTop: 32, width: 500, margin: "auto",
+
+            }}>
+              <Card title="Batch Reward Transfer "
+                headStyle={{ borderRadius: 5, background: "linear-gradient(90deg, rgba(162,34,195,0.5760898109243697) 7%, rgba(45,205,253,0.5312718837535014) 88%)", }}
+                bodyStyle={{ borderRadius: 10, background: "linear-gradient(-45deg, rgba(140,34,195,0.5760898109243697) 7%, rgba(45,159,253,0.5312718837535014) 88%)" }}
+              >
+                {/* <div style={{ padding: 8 }}>{tokensPerEth && tokensPerEth.toNumber()} tokens per ETH</div> */}
+                <div style={{ padding: 8 }}>
+                  <UploadFile setBatchUpload={setBatchUpload} setBatchData={setBatchData} />
+
+                </div>
+
+                <div style={{ padding: 8 }}>
+                  <Button
+                    type={"primary"}
+                    loading={buying}
+                    onClick={async () => {
+                      // console.log(batchData)
+                      setBuying(true);
+                      try {
+                        await tx(writeContracts.NestToken.BatchRewardMint(batchData.accounts,
+                          batchData.amounts
+                        )
+
+                        );
+                        //  console.log(batchData.amounts)
+                      } catch (error) {
+                        console.error(error);
+                      } finally {
+                        setBuying(false);
+                      }
+
+
+
+                    }}
+                    disabled={!batchUpload}
+                  >
+                    Send Tokens by Batch
+                  </Button>
+                </div>
+              </Card>
+            </div>
+
+            <div style={{ padding: 8, marginTop: 32 }}>
+              <div>Nest Token Balance:</div>
+              <Balance balance={nestTokenBalance} fontSize={64} />
+            </div>
+
+            <div style={{ width: 650, margin: "auto", marginTop: 64 }}>
+              <div style={{ fontSize: 30, textShadow: "-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black" }}>Nest Token Events:</div>
+              <br />
+
+              <br />
+
+              <Collapse defaultActiveKey={['2']} onChange={() => console.log("k")}>
+                <Panel header={<p>Batch Transactions for Diff Rewards</p>} key="2">
+                  <Card
+                    headStyle={{ borderRadius: 5, background: "linear-gradient(-90deg, rgba(162,34,195,0.5760898109243697) 7%, rgba(45,205,253,0.5312718837535014) 88%)", }}
+                    bodyStyle={{ borderRadius: 10, background: "linear-gradient(90deg, rgba(140,34,195,0.5760898109243697) 7%, rgba(45,159,253,0.5312718837535014) 88%)" }}
+                  >
+                    {nestTokensBatchRewardsEvents.reverse()?.map(item => (
+                      <div key={item.blockNumber + item.blockHash}>
+                        {/* <div>{console.log(item.args)}</div> */}
+                        {item.args[0].map((it, index) => (
+                          <div key={index}>
+
+                            <Balance balance={item.args[1][index]} />
+                            Tokens sent to  {"  "}
+                            <Address value={item.args[0][index]} ensProvider={mainnetProvider} fontSize={16} />
+                            <Divider />
+                          </div>
+                        ))}
+
+                      </div>
+                    ))}
+                  </Card>
+                </Panel>
+              </Collapse>
+
+            </div>
+          </Route>
+          <Route exact path="/batch_same">
+            <div style={{
+              padding: 8, marginTop: 32, width: 300, margin: "auto",
+
+            }}
+            >
+              <Card
+                title="Nest Tokens"
+                // extra={<a href="#">code</a>}
+                headStyle={{ borderRadius: 5, background: "linear-gradient(40deg, rgba(1,36,0,0.4360337885154062) 0%, rgba(100,9,121,0.6825323879551821) 17%, rgba(139,0,255,0.7049413515406162) 78%)" }}
+                bodyStyle={{ borderRadius: 10, background: "linear-gradient(-50deg, rgba(77,63,251,0.7301514355742297) 0%, rgba(215,70,252,0.6685267857142857) 100%)" }}
+
+              >
+                <div style={{ padding: 8 }}>
+                  {/* <Balance balance={yourTokenBalance} fontSize={64} /> */}
+                  <Balance balance={nestTokenBalance} fontSize={64} />
+
+                </div>
+              </Card>
+            </div>
+            <Divider />
+
+
+
+            <div style={{ padding: 8, marginTop: 32, width: 500, margin: "auto" }}>
+              <Card title="Batch same Reward Transfer "
+                headStyle={{ borderRadius: 5, background: "linear-gradient(90deg, rgba(63,141,251,0.7469581582633054) 0%, rgba(252,70,210,0.6797312675070029) 100%)", }}
+                bodyStyle={{ borderRadius: 10, background: "linear-gradient(-50deg, rgba(63,141,251,0.7301514355742297) 0%, rgba(252,70,210,0.6685267857142857) 100%)" }}
+              >
+                {/* <div style={{ padding: 8 }}>{tokensPerEth && tokensPerEth.toNumber()} tokens per ETH</div> */}
+                <div style={{ padding: 8 }}>
+                  <UploadFile setBatchUpload={setSameBatchUpload} setBatchData={setSameBatchData} same={true}
+                  />
+
+                  <div style={{ padding: 8 }}>
+                    <Input
+                      style={{ textAlign: "center" }}
+                      placeholder={"amount of tokens to send"}
+                      value={sameTokenSendAmount}
+                      onChange={e => {
+                        setSameTokenSendAmount(e.target.value);
+                      }}
+                    />
+                  </div>
+
+                </div>
+
+                <div style={{ padding: 8 }}>
+                  <Button
+                    type={"primary"}
+                    loading={sameBuying}
+                    onClick={async () => {
+                      // console.log(sameBatchData)
+                      setSameBuying(true);
+                      try {
+                        await tx(writeContracts.NestToken.sameRewardMint(sameBatchData.accounts,
+                          ethers.utils.parseEther("" + sameTokenSendAmount)
+                        )
+
+                        );
+                        //  console.log(batchData.amounts)
+                      } catch (error) {
+                        console.error(error);
+                      } finally {
+                        setSameBuying(false);
+                      }
+
+
+
+                    }}
+                    disabled={!sameBatchUpload}
+                  >
+                    Send equal Tokens by Batch
+                  </Button>
+                </div>
+              </Card>
+            </div>
+
+            <div style={{ padding: 8, marginTop: 32 }}>
+              <div>Nest Token Balance:</div>
+              <Balance balance={nestTokenBalance} fontSize={64} />
+            </div>
+
+            {/* <div style={{ padding: 8 }}>
+              <div>Nest ETH Balance:</div>
+              <Balance balance={vendorETHBalance} fontSize={64} /> ETH
+            </div> */}
+
+            <div style={{ width: 650, margin: "auto", marginTop: 64 }}>
+              <div style={{ fontSize: 30, textShadow: "-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black" }}>Nest Token Events:</div>
+              <br />
+
+
+              <Collapse defaultActiveKey={['3']} onChange={() => console.log("k")}>
+                <Panel header={<p>Batch Transactions for Equal Reward</p>} key="3">
+                  <Card
+                    headStyle={{ borderRadius: 5, background: "linear-gradient(90deg, rgba(63,141,251,0.7469581582633054) 0%, rgba(252,70,210,0.6797312675070029) 100%)", }}
+                    bodyStyle={{ borderRadius: 10, background: "linear-gradient(-50deg, rgba(63,141,251,0.7301514355742297) 0%, rgba(252,70,210,0.6685267857142857) 100%)" }}
+                  >
+                    {nestTokenssingleAmountEvents.reverse()?.map(item => (
+                      <div key={item.blockNumber + item.blockHash}>
+                        <div>{console.log(item.args)}</div>
+                        {item.args[0].map((it, index) => (
+                          <div key={index}>
+
+                            <Balance balance={item.args[1]} />
+                            Tokens sent to {"  "}
+                            <Address value={item.args[0][index]} ensProvider={mainnetProvider} fontSize={16} />
+                            <Divider />
+                          </div>
+                        ))}
+
+                      </div>
+                    ))}
+                  </Card>
+                </Panel>
+              </Collapse>
+              <br />
+
+            </div>
+
           </Route>
           <Route path="/contracts">
             <Contract
@@ -971,57 +969,8 @@ function App(props) {
       </div>
 
       <div style={{ marginTop: 32, opacity: 0.5 }}>
-        Created by <Address value={"Your...address"} ensProvider={mainnetProvider} fontSize={16} />
-      </div>
-
-      {/* <div style={{ marginTop: 32, paddingBottom: 128, opacity: 0.5 }}>
-        <a
-          target="_blank"
-          style={{ padding: 32, color: "#000" }}
-          href="https://github.com/austintgriffith/scaffold-eth"
-        >
-          🍴 Fork me!
-        </a>
-      </div> */}
-
-      {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
-      <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={8}>
-            <Ramp price={price} address={address} networks={NETWORKS} />
-          </Col>
-
-          <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
-            <GasGauge gasPrice={gasPrice} />
-          </Col>
-          <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
-            <Button
-              onClick={() => {
-                window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
-              }}
-              size="large"
-              shape="round"
-            >
-              <span style={{ marginRight: 8 }} role="img" aria-label="support">
-                💬
-              </span>
-              Support
-            </Button>
-          </Col>
-        </Row>
-
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={24}>
-            {
-              /*  if the local provider has a signer, let's show the faucet:  */
-              faucetAvailable ? (
-                <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
-              ) : (
-                ""
-              )
-            }
-          </Col>
-        </Row>
+        {/* Created by <Address value={"Your...address"} ensProvider={mainnetProvider} fontSize={16} /> */}
+        Team Call-Byte ©️ {new Date().getFullYear()}
       </div>
     </div>
   );

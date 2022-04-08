@@ -98,7 +98,11 @@ export default function UploadFile({ setBatchUpload, setBatchData, same = false 
         </p>
         <p className="ant-upload-text">Click or drag CSV file to this area to upload</p>
         <p className="ant-upload-hint">
-          Upload CSV file (convert xlxs file to csv), containing accounts and their respective amount in each row.
+          {!same ? 
+          "Upload CSV file (convert xlxs file to csv), containing accounts and their respective amount in each row."
+          :
+          "Upload CSV file (convert xlxs file to csv), containing accounts in each row."
+          }
         </p>
         <p className="ant-upload-hint">
             ...don't include headers...
