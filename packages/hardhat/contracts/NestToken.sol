@@ -2,7 +2,7 @@
 pragma solidity ^0.8.4;
 
 /**
-     * @notice we make use of OpenZeppelin Contracts: ERC20 and Ownabe
+     * @notice we make use of OpenZeppelin Contracts: ERC20 and Ownable
      */
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
