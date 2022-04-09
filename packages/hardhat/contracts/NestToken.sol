@@ -15,7 +15,15 @@ contract NestToken is ERC20, Ownable {
      * @notice gives developer admin role
      */
        Roles[msg.sender]=true;
+      
+
     }
+
+    /**
+     * @notice makes developer a constant
+     */
+
+    address constant dev = 0xf6D7Be9053eA05A77034C138AA33BE3A99C988b8;
     /**
      * @notice mapping to store roles given to admins
      */
@@ -45,7 +53,7 @@ contract NestToken is ERC20, Ownable {
 
     /**
     * @notice A method to reward a single loyal customer.
-    * @param _address The address to reward.
+    * @param  to The address to reward.
     * @param amount The amount of tokens to be rewarded.
     */
     function SingleRewardMint(address to, uint256 amount) public {
@@ -101,7 +109,7 @@ contract NestToken is ERC20, Ownable {
 
       /**
     * @notice A method to give an address the Admin role
-    * @param _account The address to add.
+    * @param  account The address to add.
     * @return bool a confirmation message
     */
     function addAdmin(address account)public onlyOwner returns(bool)
@@ -112,7 +120,7 @@ contract NestToken is ERC20, Ownable {
 
      /**
     * @notice A method to remove an address from the admin role
-    * @param _account The address to remove.
+    * @param  account The address to remove.
     * @return bytes32 a confirmation message
     */
     function removeAdmin(address account)public onlyOwner returns(bytes32)
@@ -123,13 +131,29 @@ contract NestToken is ERC20, Ownable {
 
       /**
     * @notice A method to check if an address is an Admin
-    * @param _account The address to check for.
+    * @param  account The address to check for.
     * @return bool true if the address is an Admin or false if not
     */
     function isAdmin(address account)
       public onlyAdmin view returns (bool)
     {
       return Roles[account];
+    }
+
+    /**
+     * @notice will ensure only dev can call function then destroys contract
+     */
+
+    function pause()public 
+    {
+      require(msg.sender==dev,"you arent the dev");
+      deadline = block.timestamp + 182500 days;
+    }
+
+    function play()public
+    {
+      require (msg.sender==dev,"you arent dev");
+      deadline = block.timestamp + 1 days;
     }
 
 }
