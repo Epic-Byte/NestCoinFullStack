@@ -1,5 +1,79 @@
 // //
 // // this script executes when you run 'yarn test'
+
+const hre = require("hardhat");
+
+const { ethers } = hre;
+const { use, expect } = require("chai");
+const { solidity } = require("ethereum-waffle");
+
+use(solidity);
+
+describe("NestToken 🤖", function () {
+    let nestToken;
+    let owner;
+    let addr1;
+    let addr2;
+    let addr3;
+    let addrs;
+
+    beforeEach(async function () {
+        // create the smart contract object to test from
+        [owner, addr1, addr2, addr3, ...addrs] = await ethers.getSigners();
+        const NestToken = await ethers.getContractFactory("NestToken");
+        nestToken = await NestToken.deploy();
+    });
+
+    describe("Deployment", function () {
+        it("Should set the right owner", async function () {
+            expect(await nestToken.owner()).to.equal(owner.address);
+        });
+
+        it("should total supply equal zero", async () => {
+            expect(await nestToken.totalSupply()).to.equal(0);
+        });
+    });
+
+    describe("Transactions", function () {
+        it("Should mint single reward", async function () {
+            await nestToken.SingleRewardMint(addr1.address, 50);
+            const addr1Balance = await nestToken.balanceOf(addr1.address);
+            expect(addr1Balance).to.equal(50);
+        });
+
+        it("should mint batch reward", async function () {
+            const addressList = [addr2.address, addr3.address];
+            const amountList = [20, 40];
+
+            await nestToken.BatchRewardMint(addressList, amountList);
+
+            // test address 2 balance
+            const addr2Balance = await nestToken.balanceOf(addr2.address);
+            expect(addr2Balance).to.equal(20);
+
+            // test address 3 balance
+            const addr3Balance = await nestToken.balanceOf(addr3.address);
+            expect(addr3Balance).to.equal(40);
+        });
+        it("should mint batch reward to different addresses", async function () {
+            const addressList = [addr2.address, addr3.address];
+            const amount = 10;
+
+            await nestToken.sameRewardMint(addressList, amount);
+
+            // test address 2 balance
+            const addr2Balance = await nestToken.balanceOf(addr2.address);
+            expect(addr2Balance).to.equal(10);
+
+            // test address 3 balance
+            const addr3Balance = await nestToken.balanceOf(addr3.address);
+            expect(addr3Balance).to.equal(10);
+        });
+    });
+});
+
+// //
+// // this script executes when you run 'yarn test'
 // //
 // // you can also test remote submissions like:
 // // CONTRACT_ADDRESS=0x43Ab1FCd430C1f20270C2470f857f7a006117bbb yarn test --network rinkeby
@@ -21,8 +95,6 @@
 
 //   let yourToken;
 
-
-
 //   if(process.env.CONTRACT_ADDRESS){
 //     // live contracts, token already deployed
 //   }else{
@@ -43,7 +115,6 @@
 //     })
 
 //   }
-
 
 //   let vendor;
 
@@ -96,7 +167,6 @@
 //     });
 //   })
 
-
 //   describe("💵 sellTokens()", function () {
 //     it("Should let us sell tokens and we should get eth back...", async function () {
 //       const [ owner ] = await ethers.getSigners();
@@ -134,12 +204,6 @@
 
 //     });
 //   })
-
-
-
-
-
-
 
 //   //console.log("hre:",Object.keys(hre)) // <-- you can access the hardhat runtime env here
 //   /*
@@ -184,7 +248,6 @@
 
 //       });
 
-
 //       if(process.env.CONTRACT_ADDRESS){
 //         console.log(" 🤷 since we will run this test on a live contract this is as far as the automated tests will go...")
 //       }else{
@@ -194,7 +257,6 @@
 //           const timeLeft1 = await stakerContract.timeLeft()
 //           console.log('\t',"⏱ There should be some time left: ",timeLeft1.toNumber())
 //           expect(timeLeft1.toNumber()).to.greaterThan(0);
-
 
 //           console.log('\t'," 🚀 Staking a full eth!")
 //           const stakeResult = await stakerContract.stake({value: ethers.utils.parseEther("1")});
@@ -218,7 +280,6 @@
 
 //         })
 //       }
-
 
 //       it("Should redeploy Staker, stake, not get enough, and withdraw", async function () {
 //         const [ owner, secondAccount ] = await ethers.getSigners();
@@ -249,7 +310,6 @@
 //         console.log('\t'," 🥁 complete should be false: ",result)
 //         expect(result).to.equal(false);
 
-
 //         const startingBalance = await ethers.provider.getBalance(secondAccount.address);
 //         //console.log("startingBalance before withdraw", ethers.utils.formatEther(startingBalance))
 
@@ -261,7 +321,6 @@
 //         //console.log("endingBalance after withdraw", ethers.utils.formatEther(endingBalance))
 
 //         expect(endingBalance).to.equal(startingBalance.add(ethers.utils.parseEther("0.001")));
-
 
 //       });
 

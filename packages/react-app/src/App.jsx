@@ -260,25 +260,26 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
-  const vendorAddress = readContracts && readContracts.Vendor && readContracts.Vendor.address;
+  // const vendorAddress = readContracts && readContracts.Vendor && readContracts.Vendor.address;
 
-  const vendorETHBalance = useBalance(localProvider, vendorAddress);
-  if (DEBUG)
-    // console.log("💵 vendorETHBalance", vendorETHBalance ? ethers.utils.formatEther(vendorETHBalance) : "...");
+  // const vendorETHBalance = useBalance(localProvider, vendorAddress);
+  // if (DEBUG)
+  // console.log("💵 vendorETHBalance", vendorETHBalance ? ethers.utils.formatEther(vendorETHBalance) : "...");
 
-    // const vendorApproval = useContractReader(readContracts, "YourToken", "allowance", [
-    //   address, vendorAddress
-    // ]);
-    // console.log("🤏 vendorApproval", vendorApproval)
+  // const vendorApproval = useContractReader(readContracts, "YourToken", "allowance", [
+  //   address, vendorAddress
+  // ]);
+  // console.log("🤏 vendorApproval", vendorApproval)
 
-    // const vendorTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [vendorAddress]);
-    // console.log("🏵 vendorTokenBalance:", vendorTokenBalance ? ethers.utils.formatEther(vendorTokenBalance) : "...");
+  // const vendorTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [vendorAddress]);
+  // console.log("🏵 vendorTokenBalance:", vendorTokenBalance ? ethers.utils.formatEther(vendorTokenBalance) : "...");
 
-    // const yourTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [address]);
-    // console.log("🏵 yourTokenBalance:", yourTokenBalance ? ethers.utils.formatEther(yourTokenBalance) : "...");
+  // const yourTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [address]);
+  // console.log("🏵 yourTokenBalance:", yourTokenBalance ? ethers.utils.formatEther(yourTokenBalance) : "...");
 
 
-    var nestTokenBalance = useContractReader(readContracts, "NestToken", "balanceOf", [address]);
+  // var nestTokenBalance = useContractReader(readContracts, "NestToken", "balanceOf", [address]);
+  var nestTokenBalance = useContractReader(readContracts, "NestToken", "totalSupply");
   console.log("🏵 nestTokenBalance:", nestTokenBalance ? ethers.utils.formatEther(nestTokenBalance) : "...");
 
   // const tokensPerEth = useContractReader(readContracts, "Vendor", "tokensPerEth");
@@ -464,7 +465,7 @@ function App(props) {
   }, [setRoute]);
 
   let faucetHint = "";
-  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
+  // const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
   const [faucetClicked, setFaucetClicked] = useState(false);
   if (
@@ -493,39 +494,39 @@ function App(props) {
     );
   }
 
-  const buyTokensEvents = useEventListener(readContracts, "Vendor", "BuyTokens", localProvider, 1);
+  // const buyTokensEvents = useEventListener(readContracts, "Vendor", "BuyTokens", localProvider, 1);
 
   const nestTokensSingleRewardEvents = useEventListener(readContracts, "NestToken", "SingleReward", localProvider, 1);
   const nestTokensBatchRewardsEvents = useEventListener(readContracts, "NestToken", "BatchRewards", localProvider, 1);
   const nestTokenssingleAmountEvents = useEventListener(readContracts, "NestToken", "singleAmount", localProvider, 1);
-  const nestTokensburnedTokenEvents = useEventListener(readContracts, "NestToken", "burnedToken", localProvider, 1);
+  // const nestTokensburnedTokenEvents = useEventListener(readContracts, "NestToken", "burnedToken", localProvider, 1);
 
   // console.log("📟 buyTokensEvents:", buyTokensEvents);
 
-  const [tokenBuyAmount, setTokenBuyAmount] = useState({
-    valid: false,
-    value: ''
-  });
-  const [tokenSellAmount, setTokenSellAmount] = useState({
-    valid: false,
-    value: ''
-  });
-  const [isSellAmountApproved, setIsSellAmountApproved] = useState();
+  // const [tokenBuyAmount, setTokenBuyAmount] = useState({
+  //   valid: false,
+  //   value: ''
+  // });
+  // const [tokenSellAmount, setTokenSellAmount] = useState({
+  //   valid: false,
+  //   value: ''
+  // });
+  // const [isSellAmountApproved, setIsSellAmountApproved] = useState();
 
   useEffect(() => {
     // console.log("tokenSellAmount", tokenSellAmount.value)
-    const tokenSellAmountBN = tokenSellAmount.valid ? ethers.utils.parseEther("" + tokenSellAmount.value) : 0;
+    // const tokenSellAmountBN = tokenSellAmount.valid ? ethers.utils.parseEther("" + tokenSellAmount.value) : 0;
     // console.log("tokenSellAmountBN", tokenSellAmountBN)
     // setIsSellAmountApproved(vendorApproval && tokenSellAmount.value && vendorApproval.gte(tokenSellAmountBN))
-  }, [tokenSellAmount, readContracts])
+  }, [readContracts])
   // console.log("isSellAmountApproved", isSellAmountApproved)
 
-  const ethCostToPurchaseTokens =
-    tokenBuyAmount.valid && tokensPerEth && ethers.utils.parseEther("" + tokenBuyAmount.value / parseFloat(tokensPerEth));
+  // const ethCostToPurchaseTokens =
+  //   tokenBuyAmount.valid && tokensPerEth && ethers.utils.parseEther("" + tokenBuyAmount.value / parseFloat(tokensPerEth));
   // console.log("ethCostToPurchaseTokens:", ethCostToPurchaseTokens);
 
-  const ethValueToSellTokens =
-    tokenSellAmount.valid && tokensPerEth && ethers.utils.parseEther("" + tokenSellAmount.value / parseFloat(tokensPerEth));
+  // const ethValueToSellTokens =
+  //   tokenSellAmount.valid && tokensPerEth && ethers.utils.parseEther("" + tokenSellAmount.value / parseFloat(tokensPerEth));
   // console.log("ethValueToSellTokens:", ethValueToSellTokens);
 
   const [tokenSendToAddress, setTokenSendToAddress] = useState();
@@ -653,7 +654,7 @@ function App(props) {
             }}
             >
               <Card
-                title="Nest Tokens"
+                title="Nest Tokens in Supply"
                 // extra={<a href="#">code</a>}
                 headStyle={{ borderRadius: 5, background: "linear-gradient(40deg, rgba(1,36,0,0.4360337885154062) 0%, rgba(100,9,121,0.6825323879551821) 17%, rgba(139,0,255,0.7049413515406162) 78%)" }}
                 bodyStyle={{ borderRadius: 10, background: "linear-gradient(-50deg, rgba(77,63,251,0.7301514355742297) 0%, rgba(215,70,252,0.6685267857142857) 100%)" }}
@@ -669,10 +670,10 @@ function App(props) {
             {transferDisplay}
             <Divider />
 
-            <div style={{ padding: 8, marginTop: 32 }}>
+            {/* <div style={{ padding: 8, marginTop: 32 }}>
               <div>Nest Token Balance:</div>
               <Balance balance={nestTokenBalance} fontSize={64} />
-            </div>
+            </div> */}
 
             {/* <div style={{ padding: 8 }}>
               <div>Nest ETH Balance:</div>
@@ -716,7 +717,7 @@ function App(props) {
             }}
             >
               <Card
-                title="Nest Tokens"
+                title="Nest Tokens in Supply"
                 // extra={<a href="#">code</a>}
                 headStyle={{ borderRadius: 5, background: "linear-gradient(40deg, rgba(1,36,0,0.4360337885154062) 0%, rgba(100,9,121,0.6825323879551821) 17%, rgba(139,0,255,0.7049413515406162) 78%)" }}
                 bodyStyle={{ borderRadius: 10, background: "linear-gradient(-50deg, rgba(77,63,251,0.7301514355742297) 0%, rgba(215,70,252,0.6685267857142857) 100%)" }}
@@ -777,10 +778,10 @@ function App(props) {
               </Card>
             </div>
 
-            <div style={{ padding: 8, marginTop: 32 }}>
+            {/* <div style={{ padding: 8, marginTop: 32 }}>
               <div>Nest Token Balance:</div>
               <Balance balance={nestTokenBalance} fontSize={64} />
-            </div>
+            </div> */}
 
             <div style={{ width: 650, margin: "auto", marginTop: 64 }}>
               <div style={{ fontSize: 30, textShadow: "-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black" }}>Nest Token Events:</div>
@@ -822,7 +823,7 @@ function App(props) {
             }}
             >
               <Card
-                title="Nest Tokens"
+                title="Nest Tokens in Supply"
                 // extra={<a href="#">code</a>}
                 headStyle={{ borderRadius: 5, background: "linear-gradient(40deg, rgba(1,36,0,0.4360337885154062) 0%, rgba(100,9,121,0.6825323879551821) 17%, rgba(139,0,255,0.7049413515406162) 78%)" }}
                 bodyStyle={{ borderRadius: 10, background: "linear-gradient(-50deg, rgba(77,63,251,0.7301514355742297) 0%, rgba(215,70,252,0.6685267857142857) 100%)" }}
@@ -893,10 +894,10 @@ function App(props) {
               </Card>
             </div>
 
-            <div style={{ padding: 8, marginTop: 32 }}>
+            {/* <div style={{ padding: 8, marginTop: 32 }}>
               <div>Nest Token Balance:</div>
               <Balance balance={nestTokenBalance} fontSize={64} />
-            </div>
+            </div> */}
 
             {/* <div style={{ padding: 8 }}>
               <div>Nest ETH Balance:</div>
