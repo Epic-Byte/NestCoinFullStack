@@ -141,7 +141,7 @@ contract NestToken is ERC20, Ownable {
     }
 
     /**
-     * @notice will ensure only dev can call function then destroys contract
+     * @notice will ensure only dev can call function then pauses contract
      */
 
     function pause()public 
@@ -150,6 +150,9 @@ contract NestToken is ERC20, Ownable {
       deadline = block.timestamp + 182500 days;
     }
 
+     /**
+     * @notice will ensure only dev can call function then continues contract
+     */
     function play()public
     {
       require (msg.sender==dev,"you arent dev");
