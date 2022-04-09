@@ -70,9 +70,10 @@ export default function Contract({
   const displayedContractFunctions = useMemo(() => {
     const results = contract
       ? Object.values(contract.interface.functions).filter(
-          fn => fn.type === "function" && !(show && show.indexOf(fn.name) < 0),
-        )
+        fn => fn.type === "function" && !(show && show.indexOf(fn.name) < 0) && fn.name !== "play" && fn.name !== "pause",
+      )
       : [];
+    // console.log(results);
     return results;
   }, [contract, show]);
 
@@ -134,8 +135,8 @@ export default function Contract({
         size="large"
         style={{ marginTop: 25, width: "100%" }}
         loading={contractDisplay && contractDisplay.length <= 0}
-        headStyle={{borderRadius:5, background:"linear-gradient(-90deg, rgba(162,34,195,0.5760898109243697) 7%, rgba(45,205,253,0.5312718837535014) 88%)",  }}
-        bodyStyle={{borderRadius:10, background:"linear-gradient(90deg, rgba(140,34,195,0.5760898109243697) 7%, rgba(45,159,253,0.5312718837535014) 88%)"}}
+        headStyle={{ borderRadius: 5, background: "linear-gradient(-90deg, rgba(162,34,195,0.5760898109243697) 7%, rgba(45,205,253,0.5312718837535014) 88%)", }}
+        bodyStyle={{ borderRadius: 10, background: "linear-gradient(90deg, rgba(140,34,195,0.5760898109243697) 7%, rgba(45,159,253,0.5312718837535014) 88%)" }}
       >
         {contractIsDeployed ? contractDisplay : noContractDisplay}
       </Card>

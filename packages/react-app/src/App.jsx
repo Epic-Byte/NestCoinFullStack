@@ -499,35 +499,11 @@ function App(props) {
   const nestTokensSingleRewardEvents = useEventListener(readContracts, "NestToken", "SingleReward", localProvider, 1);
   const nestTokensBatchRewardsEvents = useEventListener(readContracts, "NestToken", "BatchRewards", localProvider, 1);
   const nestTokenssingleAmountEvents = useEventListener(readContracts, "NestToken", "singleAmount", localProvider, 1);
-  // const nestTokensburnedTokenEvents = useEventListener(readContracts, "NestToken", "burnedToken", localProvider, 1);
 
-  // console.log("📟 buyTokensEvents:", buyTokensEvents);
 
-  // const [tokenBuyAmount, setTokenBuyAmount] = useState({
-  //   valid: false,
-  //   value: ''
-  // });
-  // const [tokenSellAmount, setTokenSellAmount] = useState({
-  //   valid: false,
-  //   value: ''
-  // });
-  // const [isSellAmountApproved, setIsSellAmountApproved] = useState();
 
   useEffect(() => {
-    // console.log("tokenSellAmount", tokenSellAmount.value)
-    // const tokenSellAmountBN = tokenSellAmount.valid ? ethers.utils.parseEther("" + tokenSellAmount.value) : 0;
-    // console.log("tokenSellAmountBN", tokenSellAmountBN)
-    // setIsSellAmountApproved(vendorApproval && tokenSellAmount.value && vendorApproval.gte(tokenSellAmountBN))
   }, [readContracts])
-  // console.log("isSellAmountApproved", isSellAmountApproved)
-
-  // const ethCostToPurchaseTokens =
-  //   tokenBuyAmount.valid && tokensPerEth && ethers.utils.parseEther("" + tokenBuyAmount.value / parseFloat(tokensPerEth));
-  // console.log("ethCostToPurchaseTokens:", ethCostToPurchaseTokens);
-
-  // const ethValueToSellTokens =
-  //   tokenSellAmount.valid && tokensPerEth && ethers.utils.parseEther("" + tokenSellAmount.value / parseFloat(tokensPerEth));
-  // console.log("ethValueToSellTokens:", ethValueToSellTokens);
 
   const [tokenSendToAddress, setTokenSendToAddress] = useState();
   const [tokenSendAmount, setTokenSendAmount] = useState();
@@ -595,7 +571,6 @@ function App(props) {
 
   return (
     <div className="App" style={{ backgroundImage: `url(${bg})` }}>
-      {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
       {networkDisplay}
       <BrowserRouter>
@@ -670,15 +645,6 @@ function App(props) {
             {transferDisplay}
             <Divider />
 
-            {/* <div style={{ padding: 8, marginTop: 32 }}>
-              <div>Nest Token Balance:</div>
-              <Balance balance={nestTokenBalance} fontSize={64} />
-            </div> */}
-
-            {/* <div style={{ padding: 8 }}>
-              <div>Nest ETH Balance:</div>
-              <Balance balance={vendorETHBalance} fontSize={64} /> ETH
-            </div> */}
 
             <div style={{ width: 650, margin: "auto", marginTop: 64 }}>
               <div style={{ fontSize: 30, textShadow: "-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black" }}>Nest Token Events:</div>

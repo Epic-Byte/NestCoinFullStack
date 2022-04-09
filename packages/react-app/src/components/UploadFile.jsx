@@ -8,21 +8,21 @@ export default function UploadFile({ setBatchUpload, setBatchData, same = false 
   const { Dragger } = Upload;
 
   const processData = (data) => {
-      let accounts = [];
-      let amounts = [];
+    let accounts = [];
+    let amounts = [];
 
-      let dataLines = data.split(/\r\n|\n/);
+    let dataLines = data.split(/\r\n|\n/);
 
-      for (let i = 0; i<dataLines.length; i++){
-        const row = dataLines[i].split(",");
-        accounts.push(row[0]);
-        amounts.push(ethers.utils.parseEther("" + row[1]));
-      
-      }
-      
-      // console.log(accounts, amounts);
+    for (let i = 0; i < dataLines.length; i++) {
+      const row = dataLines[i].split(",");
+      accounts.push(row[0]);
+      amounts.push(ethers.utils.parseEther("" + row[1]));
 
-      return {accounts,amounts};
+    }
+
+    // console.log(accounts, amounts);
+
+    return { accounts, amounts };
   }
 
   const sameProcessData = (data) => {
@@ -31,22 +31,22 @@ export default function UploadFile({ setBatchUpload, setBatchData, same = false 
 
     let dataLines = data.split(/\r\n|\n/);
 
-    for (let i = 0; i<dataLines.length; i++){
+    for (let i = 0; i < dataLines.length; i++) {
       const row = dataLines[i].split(",");
       accounts.push(row[0]);
       // amounts.push(ethers.utils.parseEther("" + row[1]));
-    
-    }
-    
-    console.log(accounts);
 
-    return {accounts};
+    }
+
+    // console.log(accounts);
+
+    return { accounts };
   }
 
   const props = {
     name: 'file',
     multiple: true,
-    accept:".csv",
+    accept: ".csv",
     action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
     onChange(info) {
       const { status } = info.file;
@@ -60,7 +60,7 @@ export default function UploadFile({ setBatchUpload, setBatchData, same = false 
       }
       if (status == 'done') {
         message.success(`${info.file.name} file uploaded successfully.`);
-        
+
         console.log(info, info.file, info.fileList, status);
         setBatchUpload(info.fileList.length > 0);
       } else if (status === 'error') {
@@ -75,12 +75,12 @@ export default function UploadFile({ setBatchUpload, setBatchData, same = false 
 
       reader.onload = e => {
         // console.log(e.target.result);
-        if (!same){
+        if (!same) {
           setBatchData(processData(e.target.result));
-        }else{
+        } else {
           setBatchData(sameProcessData(e.target.result));
         }
-        
+
 
       };
       reader.readAsText(file);
@@ -98,14 +98,14 @@ export default function UploadFile({ setBatchUpload, setBatchData, same = false 
         </p>
         <p className="ant-upload-text">Click or drag CSV file to this area to upload</p>
         <p className="ant-upload-hint">
-          {!same ? 
-          "Upload CSV file (convert xlxs file to csv), containing accounts and their respective amount in each row."
-          :
-          "Upload CSV file (convert xlxs file to csv), containing accounts in each row."
+          {!same ?
+            "Upload CSV file (convert xlxs file to csv), containing accounts and their respective amount in each row."
+            :
+            "Upload CSV file (convert xlxs file to csv), containing accounts in each row."
           }
         </p>
         <p className="ant-upload-hint">
-            ...don't include headers...
+          ...don't include headers...
         </p>
       </Dragger>
     </div>
