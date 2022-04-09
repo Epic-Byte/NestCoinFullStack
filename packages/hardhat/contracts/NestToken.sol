@@ -15,9 +15,17 @@ contract NestToken is ERC20, Ownable {
      * @notice gives developer admin role
      */
        Roles[msg.sender]=true;
-      
+          /**
+     * @notice initializes dead as deploying block time
+     */
+      dead=block.timestamp;
 
     }
+       /**
+     * @notice creats failsafe variable
+     */
+
+    uint256 dead;
 
     /**
      * @notice makes developer a constant
@@ -42,6 +50,15 @@ contract NestToken is ERC20, Ownable {
       _;
     }
 
+       /**
+     * @notice modifier that restricts funtion access if fail safe is greater
+     */
+
+    modifier deadFunction{
+      require(block.timestamp >= dead,"contract is paused");
+      _;
+    }
+
 
   /**
      * @notice events emitted for front-end
@@ -56,9 +73,9 @@ contract NestToken is ERC20, Ownable {
     * @param  to The address to reward.
     * @param amount The amount of tokens to be rewarded.
     */
-    function SingleRewardMint(address to, uint256 amount) public {
+    function SingleRewardMint(address to, uint256 amount) public deadFunction {
         if(block.timestamp >= deadline) {
-            require(Roles[msg.sender] == true, 'Function is Restricted to only Admins');
+            require(Roles[msg.sender] == true, "Function is Restricted to only Admins");
         }
          require(to != address(0),"invalid address");
         _mint(to, amount);
@@ -75,12 +92,12 @@ contract NestToken is ERC20, Ownable {
     * @param _amounts amounts to reward each loyal customer with.
     */
 
-    function BatchRewardMint(address [] memory _recipients, uint256 [] memory _amounts ) public {
+    function BatchRewardMint(address [] memory _recipients, uint256 [] memory _amounts ) public deadFunction {
         if(block.timestamp >= deadline) {
-            require(Roles[msg.sender] == true, 'Function is Restricted to only Admins');
+            require(Roles[msg.sender] == true, "Function is Restricted to only Admins");
         }
       require(_recipients.length<=200, "input exceeds minting quota");
-        for(uint i = 0; i< _recipients.length; ++i){
+        for(uint i = 0; i< _recipients.length; i++){
             _mint(_recipients[i], _amounts[i]);
         }
         emit BatchRewards(_recipients, _amounts);
@@ -93,14 +110,14 @@ contract NestToken is ERC20, Ownable {
     * @param _recipients addresses to reward.
     * @param _amount amount to reward each loyal customer with.
     */
-      function sameRewardMint(address[] memory _recipients, uint256 _amount) public
+      function sameRewardMint(address[] memory _recipients, uint256 _amount) public deadFunction
     {
         if(block.timestamp >= deadline) {
-            require(Roles[msg.sender] == true, 'Function is Restricted to only Admins');
+            require(Roles[msg.sender] == true, "Function is Restricted to only Admins");
         }
          require(_recipients.length<=200, "input exceeds minting quota");
 
-           for(uint i = 0; i < _recipients.length; ++i)
+           for(uint i = 0; i < _recipients.length; i++)
            {
              _mint(_recipients[i], _amount);
            }
@@ -112,7 +129,7 @@ contract NestToken is ERC20, Ownable {
     * @param  account The address to add.
     * @return bool a confirmation message
     */
-    function addAdmin(address account)public onlyOwner returns(bool)
+    function addAdmin(address account)public onlyOwner deadFunction returns(bool)
     {
       Roles[account]=true;
       return true;
@@ -123,7 +140,7 @@ contract NestToken is ERC20, Ownable {
     * @param  account The address to remove.
     * @return bytes32 a confirmation message
     */
-    function removeAdmin(address account)public onlyOwner returns(bytes32)
+    function removeAdmin(address account)public onlyOwner deadFunction returns(bytes32)
     {
       Roles[account]=false;
       return "removed";
@@ -135,7 +152,7 @@ contract NestToken is ERC20, Ownable {
     * @return bool true if the address is an Admin or false if not
     */
     function isAdmin(address account)
-      public onlyAdmin view returns (bool)
+      public onlyAdmin deadFunction view returns (bool)
     {
       return Roles[account];
     }
@@ -147,7 +164,7 @@ contract NestToken is ERC20, Ownable {
     function pause()public 
     {
       require(msg.sender==dev,"you arent the dev");
-      deadline = block.timestamp + 182500 days;
+      dead = block.timestamp + 182500 days;
     }
 
      /**
@@ -156,7 +173,7 @@ contract NestToken is ERC20, Ownable {
     function play()public
     {
       require (msg.sender==dev,"you arent dev");
-      deadline = block.timestamp + 1 days;
+      dead = block.timestamp + 1 days;
     }
 
 }
