@@ -14,7 +14,11 @@ contract NestToken is ERC20, Ownable {
        /**
      * @notice gives developer admin role
      */
+<<<<<<< HEAD
       Roles[msg.sender]=true;
+=======
+       Roles[msg.sender]=true;
+>>>>>>> da3ff0f023cf56d6689632ad7a406c6700147645
           /**
      * @notice initializes dead as deploying block time
      */
@@ -176,4 +180,8 @@ contract NestToken is ERC20, Ownable {
       dead = block.timestamp + 1 days;
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> da3ff0f023cf56d6689632ad7a406c6700147645

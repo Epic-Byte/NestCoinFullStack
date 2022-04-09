@@ -19,6 +19,7 @@ You'll have three terminals up for:
 > 👀 Visit your frontend at http://localhost:3000
 > 👩‍💻 Rerun `yarn deploy --reset` whenever you want to deploy new contracts to the frontend.
 
+<<<<<<< HEAD
 ###  📦 Testing 
 
 Have your local chain running with:
@@ -26,3 +27,13 @@ Have your local chain running with:
 `yarn chain` (hardhat backend)
 
 `yarn test` (to run test)
+=======
+
+###  📦 Testing 
+
+Have your local chain running with:
+
+`yarn chain` (hardhat backend)
+
+`yarn test` (to run test)
+>>>>>>> da3ff0f023cf56d6689632ad7a406c6700147645

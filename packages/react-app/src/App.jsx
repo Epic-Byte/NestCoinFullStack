@@ -935,12 +935,18 @@ function App(props) {
         {faucetHint}
       </div>
 
-      <div style={{ marginTop: 32, opacity: 0.5 }}>
-        {/* Created by <Address value={"Your...address"} ensProvider={mainnetProvider} fontSize={16} /> */}
-        Team Call-Byte ©️ {new Date().getFullYear()}
+      <div style={{ marginTop: 32 }}>
+        <div style={{ marginLeft: 32, opacity: 0.5 }}>
+          {/* Created by <Address value={"Your...address"} ensProvider={mainnetProvider} fontSize={16} /> */}
+          <a target="_blank" href="https://docs.google.com/document/d/1lzL98EAJhTSzXEstB5IcP1mj5wEMmDVZIq97Vm_2oec/edit">UI Documentation</a>
+        </div>
+
+        <div style={{ marginTop: 32, opacity: 0.5 }}>
+          {/* Created by <Address value={"Your...address"} ensProvider={mainnetProvider} fontSize={16} /> */}
+          Team Call-Byte ©️ {new Date().getFullYear()}
+        </div>
       </div>
-    </div>
-  );
+      );
 }
 
-export default App;
+      export default App;
