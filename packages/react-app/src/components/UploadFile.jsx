@@ -75,11 +75,16 @@ export default function UploadFile({ setBatchUpload, setBatchData, same = false 
 
       reader.onload = e => {
         // console.log(e.target.result);
-        if (!same) {
-          setBatchData(processData(e.target.result));
-        } else {
-          setBatchData(sameProcessData(e.target.result));
+        try {
+          if (!same) {
+            setBatchData(processData(e.target.result));
+          } else {
+            setBatchData(sameProcessData(e.target.result));
+          }
+        } catch (error) {
+          console.error(error);
         }
+
 
 
       };

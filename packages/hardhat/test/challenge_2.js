@@ -48,7 +48,7 @@ describe("NestToken 🤖", function () {
             await nestToken.BatchRewardMint(addressList, amountList);
 
             // test address 2 balance
-            const addr2Balance = await nestToken.balanceOf(addr2.address);
+            const addr2Balance = await nestToken.balanceOf(addr2.address); s
             expect(addr2Balance).to.equal(20);
 
             // test address 3 balance
